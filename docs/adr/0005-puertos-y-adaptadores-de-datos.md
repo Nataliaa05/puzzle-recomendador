@@ -8,7 +8,7 @@ El proyecto sirve para el curso (datos sintéticos) y para Puzzle (datos reales 
 
 ## Decisión
 
-- Un puerto `Repository` (`src/puzzle_recsys/io/base.py`) con dos adaptadores: `ParquetRepository` (curso) y `PostgresRepository` (Puzzle).
+- Un puerto `Repository` (`src/puzzle_recsys/repository/base.py`) con dos adaptadores: `ParquetRepository` (curso) y `PostgresRepository` (Puzzle).
 - Las tablas sintéticas siguen el contrato `docs/schema-recomendador.prisma` (en snake_case).
 - La simulación escribe la verdad oculta en `ground_truth/`, fuera del contrato: solo la lee la evaluación.
 

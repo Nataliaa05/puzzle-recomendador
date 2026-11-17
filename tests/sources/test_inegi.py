@@ -43,3 +43,23 @@ def test_confidential_population_becomes_missing(tmp_path: Path) -> None:
     pop = read_ageb_population(_zip(tmp_path))
     value = pop.loc[pop["cvegeo"] == "0901500010021", "population"].item()
     assert pd.isna(value)
+
+
+def test_read_ageb_indicators_returns_numeric_columns(tmp_path: Path) -> None:
+    header = "ENTIDAD,NOM_ENT,MUN,NOM_MUN,LOC,NOM_LOC,AGEB,MZA,POBTOT,GRAPROES\n"
+    rows = (
+        "09,CDMX,002,Az,0001,Total AGEB urbana,0010,000,3183,11.2\n"
+        "09,CDMX,002,Az,0001,Az,0010,001,159,*\n"
+        "09,CDMX,015,Cu,0001,Total AGEB urbana,0021,000,900,*\n"
+    )
+    path = tmp_path / "c.zip"
+    with zipfile.ZipFile(path, "w") as zf:
+        zf.writestr(
+            "x/conjunto_de_datos/conjunto_de_datos_ageb_urbana_09_cpv2020.csv", header + rows
+        )
+    from puzzle_recsys.sources.inegi import read_ageb_indicators
+
+    out = read_ageb_indicators(path, ["GRAPROES"])
+    assert list(out.columns) == ["cvegeo", "graproes"]
+    assert out["graproes"].tolist()[0] == 11.2
+    assert pd.isna(out["graproes"].tolist()[1])

@@ -65,7 +65,7 @@ Comensal abre el menú
 
 ### 3.2 Catálogos curados (sintéticos, declarados)
 
-- **Biblioteca de ~400 platillos canónicos**, por cocina, con ingredientes, alérgenos, proteína, picante, tipo y si es compartible.
+- **Biblioteca de ~220 platillos canónicos**, por cocina, con ingredientes, alérgenos, proteína, picante, tipo y si es compartible.
 - **Alias** de los nombres (variaciones reales de la carta).
 - Catálogos de ingredientes, alérgenos (NOM-051 / UE-14), etiquetas de dieta y cocinas.
 
@@ -98,7 +98,7 @@ Son el contrato de datos = [`schema-recomendador.prisma`](schema-recomendador.pr
 | Calibración | **Hipercubo latino** sobre la escala del Gumbel, λ y el peso de la afinidad |
 | Validación | Hechos estilizados, Kolmogorov-Smirnov / Wasserstein, réplicas Monte Carlo |
 
-**Escala por defecto** (configurable): 1 zona metropolitana, ~1,500 restaurantes, ~400 canónicos, 20,000 comensales, 12 meses.
+**Escala por defecto** (configurable): 1 zona metropolitana, ~1,500 restaurantes, ~220 canónicos, 20,000 comensales, 12 meses.
 
 ## 5. Particiones y evaluación
 
@@ -169,7 +169,7 @@ Recomendador/
 ├── reports/figures/
 ├── src/puzzle_recsys/
 │   ├── config.py          carga + validación (pydantic)
-│   ├── io/                puerto Repository: parquet_repo.py · postgres_repo.py
+│   ├── repository/        puerto Repository: base.py · parquet_repo.py · postgres_repo.py
 │   ├── sources/           inegi.py · denue.py · enigh.py · sepomex.py
 │   ├── simulation/        distributions.py · world.py · menus.py · population.py ·
 │   │                      choice.py · group_choice.py · engine.py · feedback.py ·

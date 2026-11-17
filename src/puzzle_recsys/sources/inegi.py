@@ -113,3 +113,30 @@ def read_ageb_polygons(zip_path: Path, *, entity: str = "09"):
     import geopandas as gpd
 
     return gpd.read_file(f"zip://{Path(zip_path).as_posix()}!conjunto_de_datos/{entity}a.shp")
+
+
+def read_ageb_indicators(zip_path: Path, columns: list[str]) -> pd.DataFrame:
+    """Indicadores numéricos del Censo 2020 por AGEB urbana.
+
+    Parameters
+    ----------
+    zip_path : Path
+        ZIP ``ageb_mza_urbana_<ent>_cpv2020_csv.zip``.
+    columns : list[str]
+        Columnas del censo (p. ej. ``["GRAPROES"]``: grado promedio de escolaridad).
+
+    Returns
+    -------
+    pd.DataFrame
+        ``cvegeo`` + las columnas pedidas en minúsculas, numéricas (``NaN``
+        donde el INEGI reserva el dato con ``"*"``).
+    """
+    keys = ["ENTIDAD", "MUN", "LOC", "AGEB", "NOM_LOC"]
+    df = read_inegi_csv(zip_path, member_contains="conjunto_de_datos_", usecols=keys + columns)
+    totals = df[df["NOM_LOC"].str.strip().eq("Total AGEB urbana")]
+    out = pd.DataFrame(
+        {"cvegeo": totals["ENTIDAD"] + totals["MUN"] + totals["LOC"] + totals["AGEB"]}
+    )
+    for col in columns:
+        out[col.lower()] = pd.to_numeric(totals[col], errors="coerce")
+    return out.reset_index(drop=True)

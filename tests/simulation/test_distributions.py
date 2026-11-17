@@ -52,3 +52,13 @@ def test_stratified_sample_is_reproducible_with_same_seed() -> None:
     a = stratified_sample(df, 50, ["scian", "alcaldia"], np.random.default_rng(42))
     b = stratified_sample(df, 50, ["scian", "alcaldia"], np.random.default_rng(42))
     assert a["id"].tolist() == b["id"].tolist()
+
+
+def test_make_rng_streams_are_reproducible_and_independent() -> None:
+    from puzzle_recsys.simulation.distributions import make_rng
+
+    a1 = make_rng(7, "menus").random(5)
+    a2 = make_rng(7, "menus").random(5)
+    b = make_rng(7, "world").random(5)
+    np.testing.assert_array_equal(a1, a2)
+    assert not np.allclose(a1, b)

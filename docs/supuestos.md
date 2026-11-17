@@ -11,5 +11,7 @@ Todo lo que **no** sale de datos reales se declara aquí, con su justificación 
 | S5 | MNAR en calificaciones (califica quien quedó muy contento o muy molesto) | Sesgo documentado en sistemas de reseñas | 03 |
 | S6 | La potencia estadística se calcula bajo el mundo simulado | No hay datos reales todavía | 13 |
 | S7 | Valores iniciales de los parámetros = valores de trabajo, calibrados por hipercubo latino | Sin datos reales para estimarlos | 04 |
+| S8 | El nivel de precios de un restaurante sube con la escolaridad promedio de su AGEB (`GRAPROES`, Censo 2020), con elasticidad configurable | Proxy socioeconómico real y público; no hay precios reales de menús | 02 |
+| S9 | Restaurantes sin palabra clave en el nombre ni señal para el KNN → cocina `mexicana` | El giro 722511 es "a la carta o comida corrida", mayoritariamente cocina mexicana | 01 |
 
 **Advertencia general:** los datos sintéticos validan el pipeline, las métricas y la arquitectura, no el rendimiento en el mundo real. Ese se mide con los datos de Puzzle y con la prueba A/B.

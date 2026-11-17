@@ -9,10 +9,35 @@ Usado en: notebooks 01, 02, 03.
 
 from __future__ import annotations
 
+import zlib
 from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
+
+
+def make_rng(seed: int, stream: str) -> np.random.Generator:
+    """Generador independiente y reproducible para una etapa de la simulación.
+
+    Usa ``SeedSequence`` con una clave derivada del nombre de la etapa, así
+    los flujos aleatorios de los notebooks (``"world"``, ``"menus"``...) son
+    estadísticamente independientes entre sí y cambiar uno no altera a los demás.
+
+    Parameters
+    ----------
+    seed : int
+        Semilla global de ``config/simulation.yaml``.
+    stream : str
+        Nombre de la etapa.
+
+    Returns
+    -------
+    np.random.Generator
+        Generador de esa etapa.
+    """
+    return np.random.default_rng(
+        np.random.SeedSequence(seed, spawn_key=(zlib.crc32(stream.encode()),))
+    )
 
 
 def allocate_proportional(sizes: np.ndarray, n: int) -> np.ndarray:

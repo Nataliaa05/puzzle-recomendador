@@ -8,7 +8,6 @@ metro_area: CDMX            # 16 alcaldías (CVE_ENT 09). Ampliable a la ZM del 
 
 scale:
   n_restaurants: 1500
-  n_canonical_dishes: 400
   n_diners: 20000
   months: 12
 
@@ -27,15 +26,34 @@ world:
     min_df: 2
 
 supply:
-  menu_size: {min: 20, max: 80}
-  price_lognormal_sigma: 0.35
+  # Tamaño del menú según el personal ocupado (DENUE): restaurantes grandes, cartas más largas.
+  # Se recorta si la cocina no tiene suficientes platillos en la biblioteca.
+  menu_size_by_staff_band:
+    "6 a 10 personas": {min: 12, max: 25}
+    "11 a 30 personas": {min: 18, max: 35}
+    "31 a 50 personas": {min: 25, max: 45}
+    default: {min: 30, max: 55}      # 51 personas o más
+  course_mix: {MAIN: 0.45, STARTER: 0.20, DRINK: 0.20, DESSERT: 0.10, SIDE: 0.05}
+  cross_cuisine_rate: 0.08           # % del menú con platillos de otras cocinas
+  price:
+    ses_elasticity: 0.12             # log-precio por 1 desv. estándar de escolaridad del AGEB
+    restaurant_sigma: 0.15           # dispersión lognormal entre restaurantes
+    item_sigma: 0.08                 # dispersión lognormal entre platillos del mismo restaurante
+    nine_ending_rate: 0.3            # precios psicológicos: terminan en 0, 5 o 9
   name_variation_rate: 0.6           # % de platillos con nombre distinto al canónico
-  canonical_confirmation_rate: 0.7   # % de sugerencias KNN que el restaurante confirma/corrige
+  name_noise: {alias: 0.6, decorate: 0.3, typo: 0.1}
+  recipe_variation_rate: 0.1         # % de platillos que quitan un ingrediente no principal
+  canonical_confirmation_rate: 0.7   # % de sugerencias KNN que el restaurante confirma/corrige (nb 09)
   evolution:                         # por mes
     new_item_rate: 0.03
     archive_rate: 0.02
     price_change_rate: 0.05
+    price_increase: {min: 1.03, max: 1.12}
     daily_sold_out_rate: 0.02
+
+calendar:
+  start_date: "2025-01-06"           # lunes
+  timezone: America/Mexico_City
 
 population:
   taste_dirichlet_concentration: 0.5   # bajo = fiel a pocas cocinas

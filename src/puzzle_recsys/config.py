@@ -76,7 +76,6 @@ class SimulationScale(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     n_restaurants: PositiveInt
-    n_canonical_dishes: PositiveInt
     n_diners: PositiveInt
     months: PositiveInt
 

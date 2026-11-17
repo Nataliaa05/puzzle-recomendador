@@ -1,0 +1,392 @@
+# Biblioteca de platillos canónicos (SINTÉTICA, declarada en docs/supuestos.md, S1).
+#
+# - Los ALÉRGENOS NO se escriben por platillo: se DERIVAN de los ingredientes
+#   (un solo lugar de verdad). Base: NOM-051 + moluscos y ajonjolí.
+# - price: precio típico en MXN para un restaurante de nivel medio en CDMX.
+#   El precio final se ajusta por restaurante en simulation/menus.py.
+# - cuisine: general = disponible para cualquier cocina (bebidas, postres comunes).
+# - spice: 0 (nada) a 3 (muy picante). shareable: se pide para la mesa.
+# - aliases: variaciones reales del nombre en la carta (alimentan la homologación).
+
+version: 1
+
+allergens: [gluten, crustaceos, moluscos, huevo, pescado, cacahuate, soya, lacteos, frutos_secos, ajonjoli, sulfitos]
+
+ingredients:
+  # cereales y masas
+  tortilla_maiz: {group: cereal}
+  masa_maiz: {group: cereal}
+  totopos: {group: cereal}
+  tortilla_harina: {group: cereal, allergens: [gluten]}
+  pan: {group: cereal, allergens: [gluten]}
+  pan_hamburguesa: {group: cereal, allergens: [gluten, ajonjoli]}
+  pan_dulce: {group: cereal, allergens: [gluten, huevo, lacteos]}
+  pan_arabe: {group: cereal, allergens: [gluten]}
+  masa_pizza: {group: cereal, allergens: [gluten]}
+  pasta: {group: cereal, allergens: [gluten]}
+  fideos_ramen: {group: cereal, allergens: [gluten]}
+  fideos_arroz: {group: cereal}
+  arroz: {group: cereal}
+  harina_trigo: {group: cereal, allergens: [gluten]}
+  crepa: {group: cereal, allergens: [gluten, huevo, lacteos]}
+  quinoa: {group: cereal}
+  avena: {group: cereal, allergens: [gluten]}
+  # proteínas
+  res: {group: proteina}
+  cerdo: {group: proteina}
+  pollo: {group: proteina}
+  cordero: {group: proteina}
+  chorizo: {group: proteina}
+  jamon: {group: proteina}
+  tocino: {group: proteina}
+  chicharron: {group: proteina}
+  pescado: {group: proteina, allergens: [pescado]}
+  atun: {group: proteina, allergens: [pescado]}
+  salmon: {group: proteina, allergens: [pescado]}
+  camaron: {group: proteina, allergens: [crustaceos]}
+  jaiba: {group: proteina, allergens: [crustaceos]}
+  pulpo: {group: proteina, allergens: [moluscos]}
+  calamar: {group: proteina, allergens: [moluscos]}
+  ostion: {group: proteina, allergens: [moluscos]}
+  huevo: {group: proteina, allergens: [huevo]}
+  tofu: {group: proteina, allergens: [soya]}
+  frijol: {group: leguminosa}
+  garbanzo: {group: leguminosa}
+  lenteja: {group: leguminosa}
+  # lácteos
+  queso: {group: lacteo, allergens: [lacteos]}
+  queso_oaxaca: {group: lacteo, allergens: [lacteos]}
+  mozzarella: {group: lacteo, allergens: [lacteos]}
+  parmesano: {group: lacteo, allergens: [lacteos]}
+  crema: {group: lacteo, allergens: [lacteos]}
+  leche: {group: lacteo, allergens: [lacteos]}
+  mantequilla: {group: lacteo, allergens: [lacteos]}
+  helado: {group: lacteo, allergens: [lacteos]}
+  yogurt: {group: lacteo, allergens: [lacteos]}
+  # verduras, frutas y hierbas
+  jitomate: {group: verdura}
+  cebolla: {group: verdura}
+  ajo: {group: verdura}
+  cilantro: {group: hierba}
+  perejil: {group: hierba}
+  albahaca: {group: hierba}
+  aguacate: {group: verdura}
+  lechuga: {group: verdura}
+  pepino: {group: verdura}
+  zanahoria: {group: verdura}
+  papa: {group: verdura}
+  nopal: {group: verdura}
+  elote: {group: verdura}
+  calabaza: {group: verdura}
+  pimiento: {group: verdura}
+  espinaca: {group: verdura}
+  berenjena: {group: verdura}
+  hongos: {group: verdura}
+  chile_serrano: {group: chile}
+  chile_chipotle: {group: chile}
+  chile_guajillo: {group: chile}
+  chile_poblano: {group: chile}
+  chile_habanero: {group: chile}
+  aji_amarillo: {group: chile}
+  limon: {group: fruta}
+  pina: {group: fruta}
+  mango: {group: fruta}
+  fresa: {group: fruta}
+  platano: {group: fruta}
+  manzana: {group: fruta}
+  frutos_rojos: {group: fruta}
+  coco: {group: fruta}
+  aceitunas: {group: fruta}
+  # salsas, semillas y otros
+  salsa_roja: {group: salsa}
+  salsa_verde: {group: salsa}
+  mole: {group: salsa, allergens: [cacahuate, ajonjoli, frutos_secos]}
+  salsa_soya: {group: salsa, allergens: [soya, gluten]}
+  mayonesa: {group: salsa, allergens: [huevo]}
+  tahini: {group: salsa, allergens: [ajonjoli]}
+  chimichurri: {group: salsa}
+  curry: {group: especia}
+  jengibre: {group: especia}
+  canela: {group: especia}
+  vainilla: {group: especia}
+  ajonjoli: {group: semilla, allergens: [ajonjoli]}
+  cacahuate: {group: semilla, allergens: [cacahuate]}
+  nuez: {group: semilla, allergens: [frutos_secos]}
+  almendra: {group: semilla, allergens: [frutos_secos]}
+  avellana: {group: semilla, allergens: [frutos_secos]}
+  chocolate: {group: dulce, allergens: [lacteos]}
+  cajeta: {group: dulce, allergens: [lacteos]}
+  azucar: {group: dulce}
+  leche_coco: {group: lacteo_vegetal}
+  aceite_oliva: {group: grasa}
+  cafe: {group: bebida}
+  te: {group: bebida}
+  cerveza: {group: bebida, allergens: [gluten]}
+  vino: {group: bebida, allergens: [sulfitos]}
+  tequila: {group: bebida}
+  mezcal: {group: bebida}
+  refresco: {group: bebida}
+  agua: {group: bebida}
+
+dishes:
+  # ---------------------------------------------------------------- general (bebidas y postres comunes)
+  - {slug: agua_fresca, name: Agua fresca, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 45, ingredients: [agua, azucar, frutos_rojos], aliases: [Agua del día, Agua de sabor, Jarra de agua fresca]}
+  - {slug: limonada, name: Limonada, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 50, ingredients: [agua, limon, azucar], aliases: [Limonada natural, Limonada mineral]}
+  - {slug: refresco, name: Refresco, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 40, ingredients: [refresco], aliases: [Refresco de lata, Soda]}
+  - {slug: agua_natural, name: Agua natural, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 30, ingredients: [agua], aliases: [Agua embotellada, Botella de agua]}
+  - {slug: cerveza, name: Cerveza, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 60, ingredients: [cerveza], aliases: [Cerveza nacional, Chela, Cerveza de barril]}
+  - {slug: michelada, name: Michelada, cuisine: general, course: DRINK, protein: NONE, spice: 1, price: 85, ingredients: [cerveza, limon, salsa_roja], aliases: [Chelada preparada, Michelada clásica]}
+  - {slug: cafe_americano, name: Café americano, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 40, ingredients: [cafe], aliases: [Americano, Café de olla, Café negro]}
+  - {slug: copa_vino, name: Copa de vino, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 120, ingredients: [vino], aliases: [Vino tinto copa, Vino de la casa]}
+  - {slug: margarita, name: Margarita, cuisine: general, course: DRINK, protein: NONE, spice: 0, price: 120, ingredients: [tequila, limon, azucar], aliases: [Margarita clásica, Margarita de limón]}
+  - {slug: flan, name: Flan napolitano, cuisine: general, course: DESSERT, protein: NONE, spice: 0, price: 65, ingredients: [huevo, leche, azucar, vainilla], aliases: [Flan, Flan de la casa]}
+  - {slug: pastel_chocolate, name: Pastel de chocolate, cuisine: general, course: DESSERT, protein: NONE, spice: 0, price: 85, ingredients: [harina_trigo, chocolate, huevo, azucar, mantequilla], aliases: [Rebanada de chocolate, Brownie con helado]}
+  - {slug: pay_queso, name: Pay de queso, cuisine: general, course: DESSERT, protein: NONE, spice: 0, price: 75, ingredients: [queso, harina_trigo, huevo, azucar, mantequilla], aliases: [Cheesecake, Pay de queso con frutos rojos]}
+  - {slug: helado, name: Helado, cuisine: general, course: DESSERT, protein: NONE, spice: 0, price: 55, ingredients: [helado], aliases: [Bola de helado, Nieve]}
+
+  # ---------------------------------------------------------------- mexicana (fonda / comida corrida / a la carta)
+  - {slug: sopa_tortilla, name: Sopa de tortilla, cuisine: mexicana, course: STARTER, protein: NONE, spice: 1, price: 85, ingredients: [tortilla_maiz, jitomate, chile_guajillo, aguacate, crema, queso], aliases: [Sopa azteca, Sopa tarasca]}
+  - {slug: caldo_pollo, name: Caldo de pollo, cuisine: mexicana, course: STARTER, protein: CHICKEN, spice: 0, price: 90, ingredients: [pollo, arroz, zanahoria, calabaza, cilantro], aliases: [Consomé de pollo, Caldo tlalpeño]}
+  - {slug: sopa_fideo, name: Sopa de fideo, cuisine: mexicana, course: STARTER, protein: NONE, spice: 0, price: 55, ingredients: [pasta, jitomate, cebolla], aliases: [Sopa aguada de fideo]}
+  - {slug: arroz_rojo, name: Arroz rojo, cuisine: mexicana, course: SIDE, protein: NONE, spice: 0, price: 40, ingredients: [arroz, jitomate, cebolla, ajo], aliases: [Arroz a la mexicana, Orden de arroz]}
+  - {slug: frijoles_refritos, name: Frijoles refritos, cuisine: mexicana, course: SIDE, protein: NONE, spice: 0, price: 40, ingredients: [frijol, cebolla], aliases: [Frijoles de la olla, Orden de frijoles]}
+  - {slug: guacamole, name: Guacamole, cuisine: mexicana, course: STARTER, protein: NONE, spice: 1, shareable: true, price: 120, ingredients: [aguacate, jitomate, cebolla, cilantro, chile_serrano, limon, totopos], aliases: [Guacamole con totopos, Guacamole de la casa, Guaca para la mesa]}
+  - {slug: chilaquiles_verdes, name: Chilaquiles verdes, cuisine: mexicana, course: MAIN, protein: NONE, spice: 2, price: 110, ingredients: [totopos, salsa_verde, crema, queso, cebolla], aliases: [Chilaquiles en salsa verde, Chilaquiles con pollo]}
+  - {slug: enchiladas_suizas, name: Enchiladas suizas, cuisine: mexicana, course: MAIN, protein: CHICKEN, spice: 1, price: 140, ingredients: [tortilla_maiz, pollo, salsa_verde, crema, queso], aliases: [Enchiladas verdes gratinadas, Suizas]}
+  - {slug: enchiladas_mole, name: Enchiladas de mole, cuisine: mexicana, course: MAIN, protein: CHICKEN, spice: 1, price: 145, ingredients: [tortilla_maiz, pollo, mole, ajonjoli, cebolla], aliases: [Enmoladas, Enchiladas en mole poblano]}
+  - {slug: chile_relleno, name: Chile relleno, cuisine: mexicana, course: MAIN, protein: CHEESE, spice: 1, price: 130, ingredients: [chile_poblano, queso, huevo, harina_trigo, jitomate], aliases: [Chile relleno de queso, Chile capeado]}
+  - {slug: milanesa_res, name: Milanesa de res, cuisine: mexicana, course: MAIN, protein: BEEF, spice: 0, price: 135, ingredients: [res, pan, huevo, papa, lechuga], aliases: [Milanesa con papas, Milanesa empanizada]}
+  - {slug: pechuga_plancha, name: Pechuga a la plancha, cuisine: mexicana, course: MAIN, protein: CHICKEN, spice: 0, price: 125, ingredients: [pollo, lechuga, jitomate, arroz], aliases: [Pechuga asada, Pollo a la plancha]}
+  - {slug: bistec_salsa, name: Bistec en salsa, cuisine: mexicana, course: MAIN, protein: BEEF, spice: 2, price: 130, ingredients: [res, salsa_verde, papa, cebolla], aliases: [Bistec a la mexicana, Bistec en salsa roja]}
+  - {slug: tampiquena, name: Carne a la tampiqueña, cuisine: mexicana, course: MAIN, protein: BEEF, spice: 1, price: 210, ingredients: [res, tortilla_maiz, frijol, queso, aguacate, salsa_verde], aliases: [Tampiqueña, Arrachera a la tampiqueña]}
+  - {slug: huevos_rancheros, name: Huevos rancheros, cuisine: mexicana, course: MAIN, protein: EGG, spice: 2, price: 95, ingredients: [huevo, tortilla_maiz, salsa_roja, frijol], aliases: [Huevos divorciados, Huevos al gusto]}
+  - {slug: chicharron_salsa, name: Chicharrón en salsa verde, cuisine: mexicana, course: MAIN, protein: PORK, spice: 2, price: 115, ingredients: [chicharron, salsa_verde, frijol, tortilla_maiz], aliases: [Chicharrón prensado, Chicharrón en verde]}
+  - {slug: flautas_pollo, name: Flautas de pollo, cuisine: mexicana, course: MAIN, protein: CHICKEN, spice: 1, price: 105, ingredients: [tortilla_maiz, pollo, crema, queso, lechuga, salsa_verde], aliases: [Tacos dorados de pollo, Flautas ahogadas]}
+  - {slug: arroz_con_leche, name: Arroz con leche, cuisine: mexicana, course: DESSERT, protein: NONE, spice: 0, price: 50, ingredients: [arroz, leche, canela, azucar], aliases: [Arroz con leche casero]}
+  - {slug: churros, name: Churros, cuisine: mexicana, course: DESSERT, protein: NONE, spice: 0, shareable: true, price: 70, ingredients: [harina_trigo, azucar, canela, chocolate], aliases: [Churros con chocolate, Orden de churros]}
+  - {slug: agua_jamaica, name: Agua de jamaica, cuisine: mexicana, course: DRINK, protein: NONE, spice: 0, price: 45, ingredients: [agua, azucar], aliases: [Jamaica, Agua de flor de jamaica]}
+  - {slug: horchata, name: Agua de horchata, cuisine: mexicana, course: DRINK, protein: NONE, spice: 0, price: 45, ingredients: [arroz, leche, canela, azucar], aliases: [Horchata, Horchata de arroz]}
+
+  # ---------------------------------------------------------------- mexicana regional
+  - {slug: mole_poblano, name: Mole poblano, cuisine: mexicana_regional, course: MAIN, protein: CHICKEN, spice: 1, price: 175, ingredients: [pollo, mole, ajonjoli, arroz], aliases: [Pollo en mole, Mole de la casa]}
+  - {slug: cochinita_pibil, name: Cochinita pibil, cuisine: mexicana_regional, course: MAIN, protein: PORK, spice: 1, price: 160, ingredients: [cerdo, cebolla, chile_habanero, tortilla_maiz], aliases: [Cochinita, Tacos de cochinita, Panuchos de cochinita]}
+  - {slug: tlayuda, name: Tlayuda oaxaqueña, cuisine: mexicana_regional, course: MAIN, protein: BEEF, spice: 1, shareable: true, price: 165, ingredients: [masa_maiz, frijol, queso_oaxaca, res, aguacate, lechuga], aliases: [Tlayuda, Tlayuda con tasajo]}
+  - {slug: mole_negro, name: Mole negro, cuisine: mexicana_regional, course: MAIN, protein: CHICKEN, spice: 2, price: 185, ingredients: [pollo, mole, chocolate, ajonjoli, arroz], aliases: [Mole negro oaxaqueño, Pollo en mole negro]}
+  - {slug: chiles_en_nogada, name: Chiles en nogada, cuisine: mexicana_regional, course: MAIN, protein: PORK, spice: 0, price: 260, ingredients: [chile_poblano, cerdo, nuez, crema, manzana], aliases: [Chile en nogada, Nogada]}
+  - {slug: pozole_rojo, name: Pozole rojo, cuisine: mexicana_regional, course: MAIN, protein: PORK, spice: 2, price: 150, ingredients: [cerdo, elote, chile_guajillo, lechuga, cebolla], aliases: [Pozole, Pozole estilo Guerrero, Pozole jalisciense]}
+  - {slug: birria_res, name: Birria de res, cuisine: mexicana_regional, course: MAIN, protein: BEEF, spice: 2, price: 155, ingredients: [res, chile_guajillo, cebolla, cilantro, tortilla_maiz], aliases: [Birria tapatía, Consomé de birria]}
+  - {slug: sopa_lima, name: Sopa de lima, cuisine: mexicana_regional, course: STARTER, protein: CHICKEN, spice: 0, price: 95, ingredients: [pollo, limon, tortilla_maiz, cebolla], aliases: [Sopa de lima yucateca]}
+  - {slug: memelas, name: Memelas, cuisine: mexicana_regional, course: STARTER, protein: NONE, spice: 1, shareable: true, price: 90, ingredients: [masa_maiz, frijol, queso, salsa_roja], aliases: [Memelitas, Memelas oaxaqueñas]}
+  - {slug: tejate, name: Tejate, cuisine: mexicana_regional, course: DRINK, protein: NONE, spice: 0, price: 55, ingredients: [masa_maiz, chocolate, azucar], aliases: [Tejate oaxaqueño, Chocolate de agua]}
+  - {slug: mezcal_copa, name: Mezcal, cuisine: mexicana_regional, course: DRINK, protein: NONE, spice: 0, price: 110, ingredients: [mezcal], aliases: [Copita de mezcal, Mezcal espadín]}
+
+  # ---------------------------------------------------------------- tacos y tortas
+  - {slug: tacos_pastor, name: Tacos al pastor, cuisine: tacos_tortas, course: MAIN, protein: PORK, spice: 2, price: 95, ingredients: [tortilla_maiz, cerdo, pina, cebolla, cilantro, salsa_roja], aliases: [Orden de pastor, Tacos de pastor, Pastor con todo]}
+  - {slug: tacos_suadero, name: Tacos de suadero, cuisine: tacos_tortas, course: MAIN, protein: BEEF, spice: 1, price: 95, ingredients: [tortilla_maiz, res, cebolla, cilantro, salsa_verde], aliases: [Orden de suadero, Suadero]}
+  - {slug: tacos_bistec, name: Tacos de bistec, cuisine: tacos_tortas, course: MAIN, protein: BEEF, spice: 1, price: 100, ingredients: [tortilla_maiz, res, cebolla, cilantro, salsa_verde], aliases: [Orden de bistec, Tacos de asada]}
+  - {slug: tacos_carnitas, name: Tacos de carnitas, cuisine: tacos_tortas, course: MAIN, protein: PORK, spice: 1, price: 95, ingredients: [tortilla_maiz, cerdo, cebolla, cilantro, salsa_verde], aliases: [Carnitas, Orden de carnitas, Tacos de maciza]}
+  - {slug: campechanos, name: Tacos campechanos, cuisine: tacos_tortas, course: MAIN, protein: MIXED, spice: 1, price: 105, ingredients: [tortilla_maiz, res, chorizo, cebolla, cilantro], aliases: [Campechanos, Orden campechana]}
+  - {slug: gringa, name: Gringa, cuisine: tacos_tortas, course: MAIN, protein: PORK, spice: 1, price: 85, ingredients: [tortilla_harina, cerdo, queso, pina], aliases: [Gringa al pastor, Gringas]}
+  - {slug: alambre, name: Alambre, cuisine: tacos_tortas, course: MAIN, protein: BEEF, spice: 1, shareable: true, price: 150, ingredients: [res, tocino, pimiento, cebolla, queso, tortilla_maiz], aliases: [Alambre de res, Alambre con queso]}
+  - {slug: torta_milanesa, name: Torta de milanesa, cuisine: tacos_tortas, course: MAIN, protein: BEEF, spice: 1, price: 90, ingredients: [pan, res, huevo, aguacate, frijol, jitomate, mayonesa], aliases: [Torta de mila, Torta milanesa especial]}
+  - {slug: torta_cubana, name: Torta cubana, cuisine: tacos_tortas, course: MAIN, protein: MIXED, spice: 1, price: 120, ingredients: [pan, jamon, res, chorizo, queso, huevo, aguacate, mayonesa], aliases: [Cubana, Torta cubana especial]}
+  - {slug: torta_ahogada, name: Torta ahogada, cuisine: tacos_tortas, course: MAIN, protein: PORK, spice: 3, price: 95, ingredients: [pan, cerdo, salsa_roja, cebolla], aliases: [Ahogada, Torta ahogada tapatía]}
+  - {slug: costra_queso, name: Costra de queso, cuisine: tacos_tortas, course: STARTER, protein: CHEESE, spice: 0, price: 70, ingredients: [queso, tortilla_maiz], aliases: [Costra, Queso costra]}
+  - {slug: cebollitas, name: Cebollitas asadas, cuisine: tacos_tortas, course: SIDE, protein: NONE, spice: 0, shareable: true, price: 45, ingredients: [cebolla, limon], aliases: [Orden de cebollitas, Cebollas cambray]}
+  - {slug: frijoles_charros, name: Frijoles charros, cuisine: tacos_tortas, course: SIDE, protein: PORK, spice: 1, price: 50, ingredients: [frijol, tocino, chorizo, jitomate], aliases: [Charros, Frijoles borrachos]}
+
+  # ---------------------------------------------------------------- antojitos
+  - {slug: quesadilla, name: Quesadilla de queso, cuisine: antojitos, course: MAIN, protein: CHEESE, spice: 0, price: 55, ingredients: [masa_maiz, queso_oaxaca, salsa_verde], aliases: [Quesadilla, Quesadilla de comal]}
+  - {slug: quesadilla_hongos, name: Quesadilla de hongos, cuisine: antojitos, course: MAIN, protein: NONE, spice: 1, price: 60, ingredients: [masa_maiz, hongos, queso_oaxaca, salsa_verde], aliases: [Quesadilla de champiñones]}
+  - {slug: quesadilla_tinga, name: Quesadilla de tinga, cuisine: antojitos, course: MAIN, protein: CHICKEN, spice: 2, price: 60, ingredients: [masa_maiz, pollo, chile_chipotle, cebolla, queso], aliases: [Tinga de pollo, Quesadilla de tinga de pollo]}
+  - {slug: sopes, name: Sopes, cuisine: antojitos, course: MAIN, protein: BEEF, spice: 1, price: 65, ingredients: [masa_maiz, frijol, res, crema, queso, lechuga], aliases: [Sopes de bistec, Sope sencillo]}
+  - {slug: tlacoyos, name: Tlacoyos, cuisine: antojitos, course: MAIN, protein: NONE, spice: 1, price: 50, ingredients: [masa_maiz, frijol, nopal, queso, salsa_verde], aliases: [Tlacoyo de frijol, Tlacoyos con nopales]}
+  - {slug: gorditas, name: Gorditas de chicharrón, cuisine: antojitos, course: MAIN, protein: PORK, spice: 1, price: 55, ingredients: [masa_maiz, chicharron, salsa_roja, queso], aliases: [Gordita, Gorditas rellenas]}
+  - {slug: huaraches, name: Huarache, cuisine: antojitos, course: MAIN, protein: BEEF, spice: 1, price: 85, ingredients: [masa_maiz, frijol, res, salsa_verde, queso, cebolla], aliases: [Huarache con bistec, Huarache sencillo]}
+  - {slug: pambazo, name: Pambazo, cuisine: antojitos, course: MAIN, protein: PORK, spice: 2, price: 65, ingredients: [pan, chorizo, papa, chile_guajillo, lechuga, crema], aliases: [Pambazo de papa con chorizo]}
+  - {slug: tostadas_tinga, name: Tostadas de tinga, cuisine: antojitos, course: STARTER, protein: CHICKEN, spice: 2, shareable: true, price: 70, ingredients: [tortilla_maiz, pollo, chile_chipotle, frijol, crema, lechuga], aliases: [Tostada de tinga, Tostadas surtidas]}
+  - {slug: esquites, name: Esquites, cuisine: antojitos, course: STARTER, protein: NONE, spice: 1, price: 45, ingredients: [elote, mayonesa, queso, limon, chile_serrano], aliases: [Elote en vaso, Esquites preparados]}
+  - {slug: tamal, name: Tamal, cuisine: antojitos, course: MAIN, protein: CHICKEN, spice: 1, price: 35, ingredients: [masa_maiz, pollo, salsa_verde], aliases: [Tamal verde, Tamal de rajas, Guajolota]}
+  - {slug: atole, name: Atole, cuisine: antojitos, course: DRINK, protein: NONE, spice: 0, price: 35, ingredients: [masa_maiz, leche, azucar, canela], aliases: [Champurrado, Atole de vainilla]}
+  - {slug: pozole_verde_ant, name: Pozole verde, cuisine: antojitos, course: MAIN, protein: PORK, spice: 2, price: 130, ingredients: [cerdo, elote, salsa_verde, ajonjoli], aliases: [Pozole verde guerrerense]}
+
+  # ---------------------------------------------------------------- mariscos
+  - {slug: coctel_camaron, name: Cóctel de camarón, cuisine: mariscos, course: STARTER, protein: SEAFOOD, spice: 1, price: 165, ingredients: [camaron, jitomate, cebolla, aguacate, cilantro], aliases: [Coctel de camarón, Campechana, Vuelve a la vida]}
+  - {slug: ceviche_pescado, name: Ceviche de pescado, cuisine: mariscos, course: STARTER, protein: FISH, spice: 1, shareable: true, price: 155, ingredients: [pescado, limon, jitomate, cebolla, cilantro, totopos], aliases: [Ceviche, Tostada de ceviche, Ceviche estilo Sinaloa]}
+  - {slug: aguachile, name: Aguachile, cuisine: mariscos, course: STARTER, protein: SEAFOOD, spice: 3, shareable: true, price: 185, ingredients: [camaron, limon, chile_serrano, pepino, cebolla], aliases: [Aguachile verde, Aguachile negro]}
+  - {slug: tostada_atun, name: Tostada de atún, cuisine: mariscos, course: STARTER, protein: FISH, spice: 1, price: 95, ingredients: [atun, tortilla_maiz, mayonesa, aguacate, salsa_soya], aliases: [Tostada de atún fresco]}
+  - {slug: pescado_veracruzana, name: Pescado a la veracruzana, cuisine: mariscos, course: MAIN, protein: FISH, spice: 1, price: 220, ingredients: [pescado, jitomate, aceitunas, cebolla, arroz], aliases: [Filete a la veracruzana, Huachinango a la veracruzana]}
+  - {slug: filete_mojo_ajo, name: Filete al mojo de ajo, cuisine: mariscos, course: MAIN, protein: FISH, spice: 0, price: 210, ingredients: [pescado, ajo, mantequilla, arroz, lechuga], aliases: [Pescado al mojo, Filete al ajillo]}
+  - {slug: camarones_diabla, name: Camarones a la diabla, cuisine: mariscos, course: MAIN, protein: SEAFOOD, spice: 3, price: 245, ingredients: [camaron, chile_guajillo, chile_chipotle, arroz], aliases: [Camarones diabla, Camarones enchilados]}
+  - {slug: camarones_ajo, name: Camarones al mojo de ajo, cuisine: mariscos, course: MAIN, protein: SEAFOOD, spice: 0, price: 245, ingredients: [camaron, ajo, mantequilla, arroz], aliases: [Camarones al ajillo]}
+  - {slug: pulpo_gallega, name: Pulpo a las brasas, cuisine: mariscos, course: MAIN, protein: SEAFOOD, spice: 1, price: 290, ingredients: [pulpo, papa, aceite_oliva, ajo], aliases: [Pulpo zarandeado, Pulpo enamorado]}
+  - {slug: pescado_zarandeado, name: Pescado zarandeado, cuisine: mariscos, course: MAIN, protein: FISH, spice: 2, shareable: true, price: 360, ingredients: [pescado, chile_guajillo, limon, tortilla_maiz], aliases: [Zarandeado, Pescado a la talla]}
+  - {slug: tacos_gobernador, name: Tacos gobernador, cuisine: mariscos, course: MAIN, protein: SEAFOOD, spice: 1, price: 155, ingredients: [tortilla_maiz, camaron, queso, pimiento, cebolla], aliases: [Gobernador, Tacos de camarón con queso]}
+  - {slug: caldo_7_mares, name: Caldo siete mares, cuisine: mariscos, course: MAIN, protein: SEAFOOD, spice: 1, price: 230, ingredients: [pescado, camaron, pulpo, jaiba, jitomate, chile_guajillo], aliases: [Caldo de mariscos, Siete mares]}
+  - {slug: ostiones, name: Ostiones en su concha, cuisine: mariscos, course: STARTER, protein: SEAFOOD, spice: 0, shareable: true, price: 210, ingredients: [ostion, limon], aliases: [Docena de ostiones, Ostiones frescos]}
+
+  # ---------------------------------------------------------------- cafetería
+  - {slug: cafe_latte, name: Café latte, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 60, ingredients: [cafe, leche], aliases: [Latte, Café con leche, Capuchino]}
+  - {slug: espresso, name: Espresso, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 40, ingredients: [cafe], aliases: [Expreso, Espresso doble]}
+  - {slug: chocolate_caliente, name: Chocolate caliente, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 60, ingredients: [chocolate, leche, canela], aliases: [Chocolate abuelita, Chocolate de mesa]}
+  - {slug: te_chai, name: Té chai, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 65, ingredients: [te, leche, canela, jengibre], aliases: [Chai latte, Té chai latte]}
+  - {slug: frappe, name: Frappé, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 75, ingredients: [cafe, leche, azucar, helado], aliases: [Frappé moka, Frappuccino]}
+  - {slug: smoothie, name: Smoothie de frutas, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 70, ingredients: [fresa, platano, yogurt], aliases: [Licuado de frutas, Smoothie de fresa]}
+  - {slug: jugo_naranja, name: Jugo natural, cuisine: cafeteria, course: DRINK, protein: NONE, spice: 0, price: 50, ingredients: [agua, azucar], aliases: [Jugo de naranja, Jugo del día]}
+  - {slug: concha, name: Concha, cuisine: cafeteria, course: DESSERT, protein: NONE, spice: 0, price: 30, ingredients: [pan_dulce], aliases: [Pan dulce, Concha de vainilla]}
+  - {slug: croissant, name: Croissant, cuisine: cafeteria, course: STARTER, protein: NONE, spice: 0, price: 45, ingredients: [harina_trigo, mantequilla, huevo], aliases: [Cuernito, Croissant de mantequilla]}
+  - {slug: sandwich_jamon, name: Sándwich de jamón y queso, cuisine: cafeteria, course: MAIN, protein: PORK, spice: 0, price: 85, ingredients: [pan, jamon, queso, lechuga, jitomate, mayonesa], aliases: [Sándwich clásico, Sincronizada de pan]}
+  - {slug: bagel_salmon, name: Bagel de salmón, cuisine: cafeteria, course: MAIN, protein: FISH, spice: 0, price: 135, ingredients: [pan, salmon, queso, cebolla], aliases: [Bagel con salmón ahumado]}
+  - {slug: chilaquiles_cafe, name: Chilaquiles rojos, cuisine: cafeteria, course: MAIN, protein: NONE, spice: 2, price: 105, ingredients: [totopos, salsa_roja, crema, queso, huevo], aliases: [Chilaquiles con huevo, Chilaquiles rojos con pollo]}
+  - {slug: molletes, name: Molletes, cuisine: cafeteria, course: MAIN, protein: CHEESE, spice: 0, price: 75, ingredients: [pan, frijol, queso, jitomate, cebolla], aliases: [Molletes con pico de gallo, Molletes sencillos]}
+  - {slug: hot_cakes, name: Hot cakes, cuisine: cafeteria, course: MAIN, protein: NONE, spice: 0, price: 85, ingredients: [harina_trigo, huevo, leche, mantequilla, azucar], aliases: [Pancakes, Hotcakes con miel]}
+  - {slug: bowl_avena, name: Bowl de avena con fruta, cuisine: cafeteria, course: MAIN, protein: NONE, spice: 0, price: 90, ingredients: [avena, leche, fresa, platano, nuez], aliases: [Avena con fruta, Bowl de yogurt y granola]}
+  - {slug: pastel_zanahoria, name: Pastel de zanahoria, cuisine: cafeteria, course: DESSERT, protein: NONE, spice: 0, price: 75, ingredients: [harina_trigo, zanahoria, nuez, huevo, azucar, queso], aliases: [Carrot cake, Rebanada de zanahoria]}
+
+  # ---------------------------------------------------------------- pizza
+  - {slug: pizza_pepperoni, name: Pizza de pepperoni, cuisine: pizza, course: MAIN, protein: PORK, spice: 0, shareable: true, price: 210, ingredients: [masa_pizza, jitomate, mozzarella, chorizo], aliases: [Pepperoni, Pizza pepperoni grande]}
+  - {slug: pizza_hawaiana, name: Pizza hawaiana, cuisine: pizza, course: MAIN, protein: PORK, spice: 0, shareable: true, price: 210, ingredients: [masa_pizza, jitomate, mozzarella, jamon, pina], aliases: [Hawaiana, Pizza jamón y piña]}
+  - {slug: pizza_margarita, name: Pizza margarita, cuisine: pizza, course: MAIN, protein: CHEESE, spice: 0, shareable: true, price: 195, ingredients: [masa_pizza, jitomate, mozzarella, albahaca], aliases: [Margherita, Pizza margherita]}
+  - {slug: pizza_mexicana, name: Pizza mexicana, cuisine: pizza, course: MAIN, protein: MIXED, spice: 2, shareable: true, price: 220, ingredients: [masa_pizza, jitomate, mozzarella, chorizo, chile_serrano, cebolla], aliases: [Pizza a la mexicana, Pizza ranchera]}
+  - {slug: pizza_carnes_frias, name: Pizza de carnes frías, cuisine: pizza, course: MAIN, protein: MIXED, spice: 0, shareable: true, price: 235, ingredients: [masa_pizza, jitomate, mozzarella, jamon, chorizo, tocino], aliases: [Pizza carnívora, Meat lovers]}
+  - {slug: pizza_vegetariana, name: Pizza vegetariana, cuisine: pizza, course: MAIN, protein: PLANT, spice: 0, shareable: true, price: 205, ingredients: [masa_pizza, jitomate, mozzarella, pimiento, hongos, cebolla, aceitunas], aliases: [Pizza vegetales, Veggie]}
+  - {slug: pan_ajo, name: Pan de ajo, cuisine: pizza, course: STARTER, protein: NONE, spice: 0, shareable: true, price: 75, ingredients: [pan, ajo, mantequilla, perejil], aliases: [Palitos de ajo, Pan con ajo]}
+  - {slug: alitas_bbq, name: Alitas BBQ, cuisine: pizza, course: STARTER, protein: CHICKEN, spice: 1, shareable: true, price: 165, ingredients: [pollo, azucar, ajo], aliases: [Alitas, Boneless BBQ]}
+  - {slug: calzone, name: Calzone, cuisine: pizza, course: MAIN, protein: PORK, spice: 0, price: 165, ingredients: [masa_pizza, mozzarella, jamon, hongos], aliases: [Calzone de jamón]}
+
+  # ---------------------------------------------------------------- italiana
+  - {slug: bruschetta, name: Bruschetta, cuisine: italiana, course: STARTER, protein: NONE, spice: 0, shareable: true, price: 120, ingredients: [pan, jitomate, albahaca, ajo, aceite_oliva], aliases: [Bruschettas, Bruschetta pomodoro]}
+  - {slug: ensalada_caprese, name: Ensalada caprese, cuisine: italiana, course: STARTER, protein: CHEESE, spice: 0, price: 165, ingredients: [mozzarella, jitomate, albahaca, aceite_oliva], aliases: [Caprese, Insalata caprese]}
+  - {slug: carbonara, name: Spaghetti carbonara, cuisine: italiana, course: MAIN, protein: PORK, spice: 0, price: 225, ingredients: [pasta, huevo, tocino, parmesano], aliases: [Spaghetti alla carbonara, Pasta carbonara, Carbonara]}
+  - {slug: bolognesa, name: Spaghetti a la bolognesa, cuisine: italiana, course: MAIN, protein: BEEF, spice: 0, price: 210, ingredients: [pasta, res, jitomate, parmesano], aliases: [Bolognesa, Pasta bolognesa, Tagliatelle al ragú]}
+  - {slug: fettuccine_alfredo, name: Fettuccine Alfredo, cuisine: italiana, course: MAIN, protein: NONE, spice: 0, price: 205, ingredients: [pasta, crema, mantequilla, parmesano], aliases: [Alfredo, Fettuccine al burro]}
+  - {slug: lasagna, name: Lasaña, cuisine: italiana, course: MAIN, protein: BEEF, spice: 0, price: 230, ingredients: [pasta, res, jitomate, mozzarella, parmesano, leche], aliases: [Lasagna, Lasaña bolognesa]}
+  - {slug: penne_arrabbiata, name: Penne arrabbiata, cuisine: italiana, course: MAIN, protein: PLANT, spice: 2, price: 190, ingredients: [pasta, jitomate, ajo, aceite_oliva], aliases: [Arrabbiata, Penne all'arrabbiata]}
+  - {slug: risotto_hongos, name: Risotto de hongos, cuisine: italiana, course: MAIN, protein: PLANT, spice: 0, price: 240, ingredients: [arroz, hongos, parmesano, mantequilla, vino], aliases: [Risotto ai funghi, Risotto]}
+  - {slug: pesto_pasta, name: Pasta al pesto, cuisine: italiana, course: MAIN, protein: PLANT, spice: 0, price: 210, ingredients: [pasta, albahaca, parmesano, almendra, aceite_oliva], aliases: [Linguine al pesto, Pesto genovés]}
+  - {slug: tiramisu, name: Tiramisú, cuisine: italiana, course: DESSERT, protein: NONE, spice: 0, price: 120, ingredients: [cafe, queso, huevo, azucar, harina_trigo], aliases: [Tiramisu de la casa]}
+  - {slug: panna_cotta, name: Panna cotta, cuisine: italiana, course: DESSERT, protein: NONE, spice: 0, price: 105, ingredients: [crema, azucar, frutos_rojos], aliases: [Panacota, Panna cotta de frutos rojos]}
+
+  # ---------------------------------------------------------------- japonesa
+  - {slug: edamames, name: Edamames, cuisine: japonesa, course: STARTER, protein: PLANT, spice: 0, shareable: true, price: 85, ingredients: [tofu], aliases: [Edamame, Edamames con sal]}
+  - {slug: gyozas, name: Gyozas, cuisine: japonesa, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 120, ingredients: [harina_trigo, cerdo, salsa_soya, jengibre], aliases: [Gyoza, Dumplings japoneses]}
+  - {slug: sushi_california, name: Rollo California, cuisine: japonesa, course: MAIN, protein: SEAFOOD, spice: 0, shareable: true, price: 150, ingredients: [arroz, jaiba, aguacate, pepino, ajonjoli], aliases: [California roll, Rollo california]}
+  - {slug: sushi_philadelphia, name: Rollo Philadelphia, cuisine: japonesa, course: MAIN, protein: FISH, spice: 0, shareable: true, price: 165, ingredients: [arroz, salmon, queso, aguacate], aliases: [Philadelphia roll, Rollo filadelfia]}
+  - {slug: sushi_empanizado, name: Rollo empanizado, cuisine: japonesa, course: MAIN, protein: SEAFOOD, spice: 1, shareable: true, price: 170, ingredients: [arroz, camaron, queso, aguacate, harina_trigo], aliases: [Rollo tempura, Rollo capeado]}
+  - {slug: nigiri_salmon, name: Nigiri de salmón, cuisine: japonesa, course: MAIN, protein: FISH, spice: 0, price: 140, ingredients: [arroz, salmon], aliases: [Nigiri, Sashimi de salmón]}
+  - {slug: ramen_tonkotsu, name: Ramen tonkotsu, cuisine: japonesa, course: MAIN, protein: PORK, spice: 1, price: 230, ingredients: [fideos_ramen, cerdo, huevo, salsa_soya, cebolla], aliases: [Ramen, Ramen de cerdo, Tonkotsu]}
+  - {slug: yakimeshi, name: Yakimeshi, cuisine: japonesa, course: MAIN, protein: MIXED, spice: 0, price: 145, ingredients: [arroz, huevo, pollo, salsa_soya, zanahoria], aliases: [Arroz frito japonés, Yakimeshi especial]}
+  - {slug: teriyaki_pollo, name: Pollo teriyaki, cuisine: japonesa, course: MAIN, protein: CHICKEN, spice: 0, price: 175, ingredients: [pollo, salsa_soya, azucar, arroz, ajonjoli], aliases: [Teriyaki, Pollo teriyaki con arroz]}
+  - {slug: kushiage, name: Kushiages, cuisine: japonesa, course: STARTER, protein: MIXED, spice: 0, shareable: true, price: 130, ingredients: [harina_trigo, queso, camaron, platano], aliases: [Kushiage, Banderillas]}
+  - {slug: te_verde, name: Té verde, cuisine: japonesa, course: DRINK, protein: NONE, spice: 0, price: 45, ingredients: [te], aliases: [Té verde japonés, Matcha]}
+  - {slug: mochi, name: Mochi helado, cuisine: japonesa, course: DESSERT, protein: NONE, spice: 0, price: 85, ingredients: [arroz, helado, azucar], aliases: [Mochi, Mochis]}
+
+  # ---------------------------------------------------------------- china
+  - {slug: arroz_frito, name: Arroz frito, cuisine: china, course: SIDE, protein: MIXED, spice: 0, price: 95, ingredients: [arroz, huevo, salsa_soya, cerdo, cebolla], aliases: [Arroz chino, Arroz cantonés]}
+  - {slug: chop_suey, name: Chop suey, cuisine: china, course: MAIN, protein: CHICKEN, spice: 0, price: 135, ingredients: [pollo, zanahoria, pimiento, salsa_soya, cebolla], aliases: [Chop suey de pollo, Verduras salteadas]}
+  - {slug: pollo_naranja, name: Pollo a la naranja, cuisine: china, course: MAIN, protein: CHICKEN, spice: 0, price: 145, ingredients: [pollo, harina_trigo, azucar, salsa_soya], aliases: [Pollo naranja, Orange chicken]}
+  - {slug: pollo_kung_pao, name: Pollo kung pao, cuisine: china, course: MAIN, protein: CHICKEN, spice: 2, price: 155, ingredients: [pollo, cacahuate, pimiento, salsa_soya, ajo], aliases: [Kung pao, Pollo con cacahuate]}
+  - {slug: res_brocoli, name: Res con brócoli, cuisine: china, course: MAIN, protein: BEEF, spice: 0, price: 165, ingredients: [res, salsa_soya, ajo, jengibre], aliases: [Carne con brócoli, Res mongol]}
+  - {slug: chow_mein, name: Chow mein, cuisine: china, course: MAIN, protein: MIXED, spice: 0, price: 140, ingredients: [fideos_ramen, pollo, zanahoria, salsa_soya], aliases: [Tallarines salteados, Lo mein]}
+  - {slug: rollos_primavera, name: Rollos primavera, cuisine: china, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 85, ingredients: [harina_trigo, cerdo, zanahoria, salsa_soya], aliases: [Egg rolls, Rollitos primavera]}
+  - {slug: wonton_frito, name: Wontons fritos, cuisine: china, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 90, ingredients: [harina_trigo, cerdo, salsa_soya], aliases: [Wonton, Wantán frito]}
+  - {slug: costillas_agridulce, name: Costillas agridulces, cuisine: china, course: MAIN, protein: PORK, spice: 0, price: 170, ingredients: [cerdo, pina, azucar, salsa_soya, pimiento], aliases: [Cerdo agridulce, Costilla agridulce]}
+
+  # ---------------------------------------------------------------- otras asiáticas
+  - {slug: pad_thai, name: Pad thai, cuisine: otras_asiaticas, course: MAIN, protein: SEAFOOD, spice: 1, price: 210, ingredients: [fideos_arroz, camaron, huevo, cacahuate, limon], aliases: [Pad thai de camarón, Phad thai]}
+  - {slug: curry_verde, name: Curry verde, cuisine: otras_asiaticas, course: MAIN, protein: CHICKEN, spice: 2, price: 220, ingredients: [pollo, curry, leche_coco, arroz, albahaca], aliases: [Green curry, Curry tailandés]}
+  - {slug: pho, name: Pho de res, cuisine: otras_asiaticas, course: MAIN, protein: BEEF, spice: 1, price: 210, ingredients: [fideos_arroz, res, cebolla, cilantro, jengibre], aliases: [Pho, Sopa vietnamita]}
+  - {slug: bibimbap, name: Bibimbap, cuisine: otras_asiaticas, course: MAIN, protein: BEEF, spice: 2, price: 225, ingredients: [arroz, res, huevo, espinaca, zanahoria, ajonjoli], aliases: [Bibimbap coreano]}
+  - {slug: pollo_tikka, name: Pollo tikka masala, cuisine: otras_asiaticas, course: MAIN, protein: CHICKEN, spice: 2, price: 230, ingredients: [pollo, curry, yogurt, jitomate, arroz], aliases: [Tikka masala, Pollo al curry hindú]}
+  - {slug: rollos_vietnamitas, name: Rollos vietnamitas, cuisine: otras_asiaticas, course: STARTER, protein: SEAFOOD, spice: 0, shareable: true, price: 135, ingredients: [fideos_arroz, camaron, lechuga, zanahoria, cacahuate], aliases: [Spring rolls frescos, Rollos de papel de arroz]}
+  - {slug: samosas, name: Samosas, cuisine: otras_asiaticas, course: STARTER, protein: PLANT, spice: 1, shareable: true, price: 110, ingredients: [harina_trigo, papa, curry], aliases: [Samosa de papa]}
+
+  # ---------------------------------------------------------------- hamburguesas
+  - {slug: hamburguesa_clasica, name: Hamburguesa clásica, cuisine: hamburguesas, course: MAIN, protein: BEEF, spice: 0, price: 150, ingredients: [pan_hamburguesa, res, lechuga, jitomate, cebolla, queso], aliases: [Hamburguesa sencilla, Burger clásica, Hamburguesa con queso]}
+  - {slug: hamburguesa_tocino, name: Hamburguesa con tocino, cuisine: hamburguesas, course: MAIN, protein: BEEF, spice: 0, price: 175, ingredients: [pan_hamburguesa, res, tocino, queso, cebolla], aliases: [Bacon burger, Hamburguesa BBQ]}
+  - {slug: hamburguesa_pollo, name: Hamburguesa de pollo, cuisine: hamburguesas, course: MAIN, protein: CHICKEN, spice: 0, price: 155, ingredients: [pan_hamburguesa, pollo, lechuga, mayonesa], aliases: [Chicken burger, Hamburguesa crispy]}
+  - {slug: hamburguesa_veggie, name: Hamburguesa vegetariana, cuisine: hamburguesas, course: MAIN, protein: PLANT, spice: 0, price: 160, ingredients: [pan_hamburguesa, garbanzo, lechuga, jitomate, aguacate], aliases: [Veggie burger, Hamburguesa de garbanzo]}
+  - {slug: hot_dog, name: Hot dog, cuisine: hamburguesas, course: MAIN, protein: PORK, spice: 1, price: 85, ingredients: [pan, jamon, tocino, cebolla, mayonesa], aliases: [Hot dog sonorense, Jocho]}
+  - {slug: papas_francesa, name: Papas a la francesa, cuisine: hamburguesas, course: SIDE, protein: NONE, spice: 0, shareable: true, price: 60, ingredients: [papa], aliases: [Papas fritas, French fries, Orden de papas]}
+  - {slug: aros_cebolla, name: Aros de cebolla, cuisine: hamburguesas, course: SIDE, protein: NONE, spice: 0, shareable: true, price: 75, ingredients: [cebolla, harina_trigo, cerveza], aliases: [Onion rings, Aros capeados]}
+  - {slug: malteada, name: Malteada, cuisine: hamburguesas, course: DRINK, protein: NONE, spice: 0, price: 85, ingredients: [helado, leche, chocolate], aliases: [Malteada de chocolate, Milkshake]}
+
+  # ---------------------------------------------------------------- pollo
+  - {slug: pollo_rostizado, name: Pollo rostizado, cuisine: pollo, course: MAIN, protein: CHICKEN, spice: 0, shareable: true, price: 190, ingredients: [pollo, papa, ajo], aliases: [Pollo rostizado entero, Medio pollo rostizado]}
+  - {slug: pollo_asado, name: Pollo asado al carbón, cuisine: pollo, course: MAIN, protein: CHICKEN, spice: 1, shareable: true, price: 185, ingredients: [pollo, chile_guajillo, tortilla_maiz, cebolla], aliases: [Pollo al carbón, Pollo estilo Sinaloa]}
+  - {slug: alitas_buffalo, name: Alitas buffalo, cuisine: pollo, course: STARTER, protein: CHICKEN, spice: 2, shareable: true, price: 165, ingredients: [pollo, mantequilla, chile_chipotle], aliases: [Alitas picantes, Boneless buffalo]}
+  - {slug: tiras_pollo, name: Tiras de pollo, cuisine: pollo, course: MAIN, protein: CHICKEN, spice: 0, price: 135, ingredients: [pollo, harina_trigo, huevo, papa], aliases: [Nuggets, Chicken tenders, Dedos de pollo]}
+  - {slug: ensalada_pollo, name: Ensalada de pollo, cuisine: pollo, course: MAIN, protein: CHICKEN, spice: 0, price: 125, ingredients: [pollo, lechuga, jitomate, pepino, zanahoria], aliases: [Ensalada con pollo]}
+  - {slug: pure_papa, name: Puré de papa, cuisine: pollo, course: SIDE, protein: NONE, spice: 0, price: 45, ingredients: [papa, mantequilla, leche], aliases: [Puré, Puré de la casa]}
+
+  # ---------------------------------------------------------------- argentina / cortes
+  - {slug: arrachera, name: Arrachera, cuisine: argentina_cortes, course: MAIN, protein: BEEF, spice: 0, price: 295, ingredients: [res, cebolla, papa, chimichurri], aliases: [Arrachera a la parrilla, Arrachera marinada]}
+  - {slug: rib_eye, name: Rib eye, cuisine: argentina_cortes, course: MAIN, protein: BEEF, spice: 0, price: 520, ingredients: [res, papa, mantequilla], aliases: [Ribeye, Rib eye 400 g]}
+  - {slug: bife_chorizo, name: Bife de chorizo, cuisine: argentina_cortes, course: MAIN, protein: BEEF, spice: 0, price: 460, ingredients: [res, chimichurri, papa], aliases: [New York, Bife angosto]}
+  - {slug: parrillada, name: Parrillada para compartir, cuisine: argentina_cortes, course: MAIN, protein: MIXED, spice: 0, shareable: true, price: 890, ingredients: [res, chorizo, pollo, cebolla, chimichurri], aliases: [Parrillada argentina, Parrillada mixta]}
+  - {slug: empanadas, name: Empanadas argentinas, cuisine: argentina_cortes, course: STARTER, protein: BEEF, spice: 0, shareable: true, price: 110, ingredients: [harina_trigo, res, cebolla, huevo, aceitunas], aliases: [Empanadas de carne, Empanada criolla]}
+  - {slug: provoleta, name: Provoleta, cuisine: argentina_cortes, course: STARTER, protein: CHEESE, spice: 0, shareable: true, price: 165, ingredients: [queso, aceite_oliva], aliases: [Provolone a la parrilla, Queso provolone]}
+  - {slug: chorizo_argentino, name: Chorizo argentino, cuisine: argentina_cortes, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 135, ingredients: [chorizo, pan, chimichurri], aliases: [Choripán, Chorizo a la parrilla]}
+  - {slug: ensalada_mixta, name: Ensalada mixta, cuisine: argentina_cortes, course: SIDE, protein: NONE, spice: 0, price: 95, ingredients: [lechuga, jitomate, cebolla, aceite_oliva], aliases: [Ensalada de la casa, Ensalada verde]}
+  - {slug: copa_malbec, name: Copa de Malbec, cuisine: argentina_cortes, course: DRINK, protein: NONE, spice: 0, price: 150, ingredients: [vino], aliases: [Malbec, Vino tinto argentino]}
+
+  # ---------------------------------------------------------------- española
+  - {slug: paella, name: Paella valenciana, cuisine: espanola, course: MAIN, protein: MIXED, spice: 0, shareable: true, price: 380, ingredients: [arroz, camaron, calamar, pollo, pimiento], aliases: [Paella, Paella mixta, Paella marinera]}
+  - {slug: tortilla_espanola, name: Tortilla española, cuisine: espanola, course: STARTER, protein: EGG, spice: 0, shareable: true, price: 135, ingredients: [huevo, papa, cebolla, aceite_oliva], aliases: [Tortilla de patatas]}
+  - {slug: gambas_ajillo, name: Gambas al ajillo, cuisine: espanola, course: STARTER, protein: SEAFOOD, spice: 1, shareable: true, price: 220, ingredients: [camaron, ajo, aceite_oliva, pan], aliases: [Gambas, Gambas al ajillo con pan]}
+  - {slug: croquetas, name: Croquetas de jamón, cuisine: espanola, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 150, ingredients: [jamon, leche, harina_trigo, huevo, pan], aliases: [Croquetas, Croquetas caseras]}
+  - {slug: tabla_iberica, name: Tabla de ibéricos, cuisine: espanola, course: STARTER, protein: PORK, spice: 0, shareable: true, price: 340, ingredients: [jamon, chorizo, queso, pan], aliases: [Tabla de jamón serrano, Embutidos]}
+  - {slug: calamares_romana, name: Calamares a la romana, cuisine: espanola, course: STARTER, protein: SEAFOOD, spice: 0, shareable: true, price: 185, ingredients: [calamar, harina_trigo, limon], aliases: [Calamares fritos, Rabas]}
+  - {slug: bacalao_vizcaina, name: Bacalao a la vizcaína, cuisine: espanola, course: MAIN, protein: FISH, spice: 0, price: 340, ingredients: [pescado, jitomate, aceitunas, pimiento, papa], aliases: [Bacalao, Bacalao navideño]}
+  - {slug: fabada, name: Fabada asturiana, cuisine: espanola, course: MAIN, protein: PORK, spice: 0, price: 260, ingredients: [frijol, chorizo, tocino, jamon], aliases: [Fabada, Fabes]}
+  - {slug: pollo_ajillo, name: Pollo al ajillo, cuisine: espanola, course: MAIN, protein: CHICKEN, spice: 0, price: 220, ingredients: [pollo, ajo, aceite_oliva, vino, papa], aliases: [Pollo al ajillo con patatas]}
+  - {slug: sangria, name: Sangría, cuisine: espanola, course: DRINK, protein: NONE, spice: 0, price: 120, ingredients: [vino, manzana, azucar], aliases: [Sangría de la casa, Jarra de sangría]}
+  - {slug: crema_catalana, name: Crema catalana, cuisine: espanola, course: DESSERT, protein: NONE, spice: 0, price: 95, ingredients: [leche, huevo, azucar, canela], aliases: [Crema quemada catalana]}
+
+  # ---------------------------------------------------------------- francesa
+  - {slug: sopa_cebolla, name: Sopa de cebolla, cuisine: francesa, course: STARTER, protein: NONE, spice: 0, price: 140, ingredients: [cebolla, pan, queso, mantequilla, vino], aliases: [Soupe à l'oignon, Sopa gratinada]}
+  - {slug: croque_monsieur, name: Croque monsieur, cuisine: francesa, course: MAIN, protein: PORK, spice: 0, price: 165, ingredients: [pan, jamon, queso, leche, mantequilla], aliases: [Croque madame, Sándwich gratinado]}
+  - {slug: crepa_dulce, name: Crepa de nutella, cuisine: francesa, course: DESSERT, protein: NONE, spice: 0, price: 95, ingredients: [crepa, chocolate, avellana, platano], aliases: [Crepa dulce, Crepa de cajeta, Crêpe]}
+  - {slug: crepa_salada, name: Crepa de jamón y queso, cuisine: francesa, course: MAIN, protein: PORK, spice: 0, price: 135, ingredients: [crepa, jamon, queso, espinaca], aliases: [Crepa salada, Galette]}
+  - {slug: quiche, name: Quiche lorraine, cuisine: francesa, course: MAIN, protein: PORK, spice: 0, price: 150, ingredients: [harina_trigo, huevo, crema, tocino, queso], aliases: [Quiche, Quiche de espinaca]}
+  - {slug: boeuf_bourguignon, name: Res a la borgoña, cuisine: francesa, course: MAIN, protein: BEEF, spice: 0, price: 320, ingredients: [res, vino, hongos, zanahoria, papa], aliases: [Boeuf bourguignon, Estofado de res]}
+  - {slug: creme_brulee, name: Crème brûlée, cuisine: francesa, course: DESSERT, protein: NONE, spice: 0, price: 115, ingredients: [crema, huevo, azucar, vainilla], aliases: [Creme brulee, Crema quemada]}
+
+  # ---------------------------------------------------------------- vegetariana
+  - {slug: bowl_quinoa, name: Bowl de quinoa, cuisine: vegetariana, course: MAIN, protein: PLANT, spice: 0, price: 165, ingredients: [quinoa, aguacate, garbanzo, espinaca, jitomate], aliases: [Buddha bowl, Bowl vegano]}
+  - {slug: ensalada_cesar_veg, name: Ensalada verde con aguacate, cuisine: vegetariana, course: STARTER, protein: PLANT, spice: 0, price: 130, ingredients: [lechuga, aguacate, pepino, almendra, aceite_oliva], aliases: [Ensalada de la huerta, Ensalada detox]}
+  - {slug: tacos_coliflor, name: Tacos de coliflor al pastor, cuisine: vegetariana, course: MAIN, protein: PLANT, spice: 2, price: 120, ingredients: [tortilla_maiz, pina, cebolla, cilantro, salsa_roja], aliases: [Pastor vegano, Tacos veganos]}
+  - {slug: hamburguesa_lentejas, name: Hamburguesa de lentejas, cuisine: vegetariana, course: MAIN, protein: PLANT, spice: 0, price: 155, ingredients: [pan_hamburguesa, lenteja, lechuga, jitomate], aliases: [Burger de lenteja]}
+  - {slug: curry_garbanzo, name: Curry de garbanzo, cuisine: vegetariana, course: MAIN, protein: PLANT, spice: 2, price: 165, ingredients: [garbanzo, curry, leche_coco, arroz, espinaca], aliases: [Chana masala, Curry vegano]}
+  - {slug: tofu_salteado, name: Tofu salteado, cuisine: vegetariana, course: MAIN, protein: PLANT, spice: 1, price: 160, ingredients: [tofu, pimiento, salsa_soya, arroz, jengibre], aliases: [Stir fry de tofu]}
+  - {slug: jugo_verde, name: Jugo verde, cuisine: vegetariana, course: DRINK, protein: NONE, spice: 0, price: 60, ingredients: [espinaca, pepino, pina, agua], aliases: [Green juice, Jugo detox]}
+
+  # ---------------------------------------------------------------- medio oriente
+  - {slug: hummus, name: Hummus, cuisine: medio_oriente, course: STARTER, protein: PLANT, spice: 0, shareable: true, price: 125, ingredients: [garbanzo, tahini, ajo, limon, pan_arabe], aliases: [Hummus con pan árabe, Jumus]}
+  - {slug: falafel, name: Falafel, cuisine: medio_oriente, course: MAIN, protein: PLANT, spice: 0, price: 145, ingredients: [garbanzo, perejil, ajo, tahini, pan_arabe], aliases: [Falafel en pan árabe, Plato de falafel]}
+  - {slug: shawarma, name: Shawarma de pollo, cuisine: medio_oriente, course: MAIN, protein: CHICKEN, spice: 1, price: 155, ingredients: [pollo, pan_arabe, yogurt, ajo, jitomate], aliases: [Shawarma, Taco árabe, Kebab]}
+  - {slug: kibbeh, name: Kibbeh, cuisine: medio_oriente, course: STARTER, protein: BEEF, spice: 0, shareable: true, price: 135, ingredients: [res, harina_trigo, cebolla, nuez], aliases: [Kibi, Quipe]}
+  - {slug: tabule, name: Tabule, cuisine: medio_oriente, course: STARTER, protein: PLANT, spice: 0, price: 110, ingredients: [harina_trigo, perejil, jitomate, limon, aceite_oliva], aliases: [Tabbouleh, Ensalada tabule]}
+  - {slug: kafta, name: Kafta a la parrilla, cuisine: medio_oriente, course: MAIN, protein: BEEF, spice: 0, price: 175, ingredients: [res, cebolla, perejil, arroz, pan_arabe], aliases: [Kafta, Kofta]}
+  - {slug: mujaddara, name: Mujaddara, cuisine: medio_oriente, course: MAIN, protein: PLANT, spice: 0, price: 140, ingredients: [lenteja, arroz, cebolla, yogurt], aliases: [Arroz con lentejas árabe]}
+  - {slug: baklava, name: Baklava, cuisine: medio_oriente, course: DESSERT, protein: NONE, spice: 0, price: 85, ingredients: [harina_trigo, nuez, almendra, azucar, mantequilla], aliases: [Baklawa, Dulces árabes]}
+
+  # ---------------------------------------------------------------- peruana
+  - {slug: ceviche_peruano, name: Ceviche peruano, cuisine: peruana, course: STARTER, protein: FISH, spice: 2, shareable: true, price: 220, ingredients: [pescado, limon, aji_amarillo, cebolla, elote], aliases: [Ceviche clásico, Ceviche de pescado peruano]}
+  - {slug: lomo_saltado, name: Lomo saltado, cuisine: peruana, course: MAIN, protein: BEEF, spice: 1, price: 280, ingredients: [res, papa, cebolla, jitomate, salsa_soya, arroz], aliases: [Lomo saltado clásico]}
+  - {slug: aji_gallina, name: Ají de gallina, cuisine: peruana, course: MAIN, protein: CHICKEN, spice: 1, price: 230, ingredients: [pollo, aji_amarillo, pan, leche, nuez, arroz], aliases: [Ají de gallina peruano]}
+  - {slug: causa_limena, name: Causa limeña, cuisine: peruana, course: STARTER, protein: CHICKEN, spice: 1, price: 165, ingredients: [papa, aji_amarillo, pollo, mayonesa, aguacate], aliases: [Causa, Causa de pollo]}
+  - {slug: anticuchos, name: Anticuchos, cuisine: peruana, course: STARTER, protein: BEEF, spice: 2, shareable: true, price: 185, ingredients: [res, aji_amarillo, ajo, papa], aliases: [Anticucho de corazón]}
+  - {slug: arroz_chaufa, name: Arroz chaufa, cuisine: peruana, course: MAIN, protein: CHICKEN, spice: 0, price: 210, ingredients: [arroz, pollo, huevo, salsa_soya, cebolla], aliases: [Chaufa, Chaufa de pollo]}
+  - {slug: pollo_brasa, name: Pollo a la brasa, cuisine: peruana, course: MAIN, protein: CHICKEN, spice: 1, shareable: true, price: 240, ingredients: [pollo, papa, aji_amarillo, lechuga], aliases: [Pollo a la brasa peruano, Cuarto de pollo a la brasa]}
+  - {slug: pisco_sour, name: Pisco sour, cuisine: peruana, course: DRINK, protein: NONE, spice: 0, price: 140, ingredients: [limon, azucar, huevo], aliases: [Pisco, Pisco sour clásico]}
+
+  # ---------------------------------------------------------------- familiar de cadena (Vips, Toks, Sanborns...)
+  - {slug: club_sandwich, name: Club sándwich, cuisine: familiar_cadena, course: MAIN, protein: MIXED, spice: 0, price: 165, ingredients: [pan, pollo, jamon, tocino, lechuga, jitomate, mayonesa, papa], aliases: [Sándwich club, Club sandwich con papas]}
+  - {slug: enchiladas_sanborns, name: Enchiladas suizas de la casa, cuisine: familiar_cadena, course: MAIN, protein: CHICKEN, spice: 1, price: 175, ingredients: [tortilla_maiz, pollo, salsa_verde, crema, queso], aliases: [Enchiladas suizas gratinadas, Suizas de la casa]}
+  - {slug: molletes_cadena, name: Molletes con chorizo, cuisine: familiar_cadena, course: MAIN, protein: PORK, spice: 0, price: 120, ingredients: [pan, frijol, queso, chorizo], aliases: [Molletes especiales]}
+  - {slug: hotcakes_cadena, name: Hot cakes con tocino, cuisine: familiar_cadena, course: MAIN, protein: PORK, spice: 0, price: 130, ingredients: [harina_trigo, huevo, leche, mantequilla, tocino], aliases: [Paquete hot cakes, Pancakes con tocino]}
+  - {slug: huevos_motulenos, name: Huevos motuleños, cuisine: familiar_cadena, course: MAIN, protein: EGG, spice: 1, price: 140, ingredients: [huevo, tortilla_maiz, frijol, jamon, salsa_roja, queso], aliases: [Motuleños, Huevos a la motuleña]}
+  - {slug: sopa_tortilla_cadena, name: Sopa de tortilla de la casa, cuisine: familiar_cadena, course: STARTER, protein: NONE, spice: 1, price: 105, ingredients: [tortilla_maiz, jitomate, chile_guajillo, aguacate, crema, queso], aliases: [Sopa azteca de la casa]}
+  - {slug: cafe_refill, name: Café de grano con refill, cuisine: familiar_cadena, course: DRINK, protein: NONE, spice: 0, price: 55, ingredients: [cafe], aliases: [Café de refill, Café americano refill]}
+  - {slug: pay_manzana, name: Pay de manzana, cuisine: familiar_cadena, course: DESSERT, protein: NONE, spice: 0, price: 85, ingredients: [harina_trigo, manzana, canela, mantequilla, azucar], aliases: [Pay de manzana con helado, Apple pie]}

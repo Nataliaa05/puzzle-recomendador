@@ -241,3 +241,28 @@ def evaluate_knn_holdout(
         "macro_f1": float(f1_score(truth, pred["cuisine_pred"], average="macro")),
         "coverage": float(pred["cuisine_source"].eq("KNN").mean()),
     }
+
+
+def extract_brand(names: pd.Series, rules: CuisineRules) -> pd.Series:
+    """Marca de cadena detectada en el nombre (o ``None``).
+
+    Usa los patrones de las reglas **no transferibles** (las que dependen de
+    una marca, como ``familiar_cadena``). Sirve para que todas las sucursales
+    de una cadena compartan el mismo menú, como una plantilla.
+
+    Returns
+    -------
+    pd.Series
+        Marca normalizada (``"vips"``, ``"toks"``...) alineada con ``names``.
+    """
+    patterns = [pat for cuisine, pat in rules.rules if cuisine in rules.non_transferable]
+
+    def _brand(name: str | None) -> str | None:
+        text = normalize_name(name)
+        for pat in patterns:
+            match = pat.search(text)
+            if match:
+                return match.group(0).strip()
+        return None
+
+    return names.map(_brand)

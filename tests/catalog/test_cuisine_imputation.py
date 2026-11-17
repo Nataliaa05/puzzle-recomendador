@@ -141,3 +141,24 @@ def test_project_rules_on_real_examples(name: str, expected: str) -> None:
     rules = CuisineRules.from_yaml(load_paths().external / "cuisine_rules.yaml")
     out = classify_by_rules(pd.Series([name]), pd.Series(["722511"]), rules)
     assert out.loc[0, "cuisine_rule"] == expected
+
+
+def test_extract_brand_from_non_transferable_rules() -> None:
+    from puzzle_recsys.catalog.cuisine_imputation import extract_brand
+
+    rules = CuisineRules.from_dict(
+        {
+            "name_rules": [
+                {
+                    "cuisine": "familiar_cadena",
+                    "pattern": r"\bvips\b|\btoks\b",
+                    "transferable": False,
+                },
+                {"cuisine": "japonesa", "pattern": "sushi"},
+            ]
+        }
+    )
+    names = pd.Series(["81027 VIPS COYOACAN", "TOKS", "SUSHI ROLL", "LA FONDA"])
+    brands = extract_brand(names, rules)
+    assert brands.iloc[:2].tolist() == ["vips", "toks"]
+    assert brands.iloc[2:].isna().all()

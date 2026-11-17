@@ -42,9 +42,9 @@ def test_simulation_has_reproducible_seed_and_valid_scale() -> None:
 
 def test_scale_rejects_non_positive_values() -> None:
     with pytest.raises(ValidationError):
-        SimulationScale(n_restaurants=0, n_canonical_dishes=400, n_diners=20_000, months=12)
+        SimulationScale(n_restaurants=0, n_diners=20_000, months=12)
 
 
 def test_scale_rejects_unknown_keys() -> None:
     with pytest.raises(ValidationError):
-        SimulationScale(n_restaurants=1, n_canonical_dishes=1, n_diners=1, months=1, typo_field=3)
+        SimulationScale(n_restaurants=1, n_diners=1, months=1, typo_field=3)
