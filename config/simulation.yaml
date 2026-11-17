@@ -13,8 +13,18 @@ scale:
   months: 12
 
 world:
-  scian_prefix: "7225"       # servicios de preparación de alimentos y bebidas
-  stratify_by: [scian_code, adminarea2]
+  # Universo de clientes posibles de Puzzle: servicio en mesa o cafetería.
+  # Excluidos: 722516 autoservicio, 722518 para llevar, 722519 otros alimentos.
+  include_scian: ["722511", "722512", "722513", "722514", "722515", "722517"]
+  min_staff_band: "6 a 10 personas"   # proxy de "tiene meseros y mesas"
+  stratify_by: [scian_code, cve_mun]
+  cuisine_knn:
+    n_neighbors: 15
+    min_confidence: 0.4               # debajo de esto → default_cuisine
+    default_cuisine: mexicana
+    holdout_fraction: 0.2             # para medir la exactitud de la imputación
+    geo_weight: 0.0                   # la ubicación EMPEORA la imputación (F1 0.37 vs 0.25), ver notebook 01
+    min_df: 2
 
 supply:
   menu_size: {min: 20, max: 80}

@@ -1,0 +1,39 @@
+# Reglas de homologación de la cocina de un restaurante a partir de su nombre.
+# - Los patrones son expresiones regulares sobre el nombre NORMALIZADO
+#   (minúsculas, sin acentos, sin signos).
+#   OJO: con comillas dobles, \b se escribe doble ("\\b"); con comillas simples, simple.
+#   Un test (test_project_rules_file_has_no_control_characters) lo vigila.
+# - Se evalúan EN ORDEN: gana la primera que coincide (las específicas van primero).
+# - Si ninguna coincide, se usa el valor por defecto del código SCIAN (si existe).
+# - Lo que queda sin etiqueta se imputa con KNN (catalog/cuisine_imputation.py).
+
+name_rules:
+  - {cuisine: peruana,            pattern: "peru|nikkei|anticuch|saltado|brasa"}
+  - {cuisine: familiar_cadena,    transferable: false, pattern: '\bvips\b|\btoks\b|sanborns|\bihop\b|\bwings\b|denny|potzollcalli|california|el porton|lyni'}
+  - {cuisine: japonesa,           pattern: "sh?us?hi|ramen|japon|izakaya|teppan|udon|tempura"}
+  - {cuisine: otras_asiaticas,    pattern: "thai|tailand|corea|korean|vietnam|\\bpho\\b|india|hindu|curry|asiat"}
+  - {cuisine: china,              pattern: "\\bchin[ao]s?\\b|\\bwok\\b|chop suey|cantones|dim sum"}
+  - {cuisine: mariscos,           pattern: "marisc|ostion|pescad|cevich|coctel|camaron|pulpo|langost|\\bmar\\b"}
+  - {cuisine: pizza,              pattern: "pizz"}
+  - {cuisine: italiana,           pattern: "italian|trattoria|osteria|ristorante|\\bpasta"}
+  - {cuisine: hamburguesas,       pattern: "burger|hamburgues"}
+  - {cuisine: pollo,              pattern: "pollo|rostiz|alitas|wings"}
+  - {cuisine: argentina_cortes,   pattern: "argentin|parrill|asador|\\bcortes\\b|steak|grill"}
+  - {cuisine: medio_oriente,      pattern: "liban|arabe|ehden|kebab|shawarma|falafel|turc|griego|grieg|mediterr"}
+  - {cuisine: espanola,           pattern: "espan|tapas|paella|iberic|gallego"}
+  - {cuisine: francesa,           pattern: "frances|bistro|brasserie|creperi|crepa"}
+  - {cuisine: vegetariana,        pattern: "vegan|vegetarian|ensalad|salad|healthy|organic"}
+  - {cuisine: tacos_tortas,       pattern: "taco|taquer|torta|pastor|barbacoa|carnitas|birria|suadero"}
+  - {cuisine: antojitos,          pattern: "antoj|quesadill|tlacoy|garnach|pozol|tamal|\\bsopes?\\b|gordita|tlayud|esquite"}
+  - {cuisine: cafeteria,          pattern: "\\bcafe|coffee|cafeter|panader|bakery|pasteler|reposter|helad|never|nieve|jugo|smoothie"}
+  - {cuisine: mexicana_regional,  pattern: "oaxa|poblan|yucat|veracruz|michoac|jalisc|tapat|norten|sonor|guerrer|huasteca|chiapa|regional|mole|cochinita|mixiote"}
+  - {cuisine: mexicana,           pattern: 'mexican|fonda|cocina economica|comida corrida|comedor|cocina|comidas?\b|sazon|lonch|abuel|mama|casero|antojeria'}
+
+# Cocina por defecto según el código SCIAN (cuando el nombre no dice nada).
+# 722511 (a la carta / comida corrida) NO tiene default: es el que se imputa con KNN.
+scian_defaults:
+  "722512": mariscos
+  "722513": antojitos
+  "722514": tacos_tortas
+  "722515": cafeteria
+  "722517": pizza
