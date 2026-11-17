@@ -1,0 +1,9 @@
+# Rutas relativas a la raíz del proyecto. Se resuelven en puzzle_recsys.config.load_paths().
+raw: data/raw
+external: data/external
+interim: data/interim
+synthetic: data/synthetic
+processed: data/processed
+data_model: data/Data_model
+models: models
+figures: reports/figures

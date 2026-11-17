@@ -1,0 +1,916 @@
+// =====================================================================
+// PUZZLE RESTAURANT — ESQUEMA DEL RECOMENDADOR (PROPUESTA v2)
+// =====================================================================
+// Estado: PROPUESTA. NO está aplicado en bouquet/prisma/schema.prisma.
+// Diego tiene que revisarlo antes de cualquier migración.
+// Explicación de cada cambio: docs/cambios-base-de-datos.md
+//
+// Este archivo EXTIENDE el esquema actual de bouquet. Los modelos
+// existentes (Restaurant, TemplateItem, RestaurantMenuItem, Guest,
+// DiningSession, OrderItem, ModifierOption, etc.) NO se repiten acá. Al
+// final del archivo está la sección "CAMBIOS A MODELOS EXISTENTES".
+//
+// v2 (2026-11-16):
+//   - Modelo principal = recomendación de PLATILLOS ("para ti" y "para la mesa").
+//   - Platillos canónicos (CanonicalDish + alias) para transferir gustos entre restaurantes.
+//   - Atributos del platillo en el platillo SERVIDO (RestaurantMenuItem), no en TemplateItem.
+//   - Historial de precio y de disponibilidad (negativos "a la fecha").
+//   - OrderItem.isShared, ModifierOption → ingrediente.
+//   - RecommendationSlate/Item + ExperimentAssignment (posición, A/B).
+//
+// Convenciones (las mismas de bouquet):
+//   - ids: String @id @default(uuid())
+//   - dinero en CENTAVOS (Int), con la moneda de la cadena (Chain.currency)
+//   - createdAt / updatedAt en todas las tablas que se editan
+//
+// Alcance inicial: México. Diseño MULTIPAÍS: geografía genérica
+// (AdminArea1/AdminArea2/Neighborhood) y lo propio de cada país en CountryConfig.
+// =====================================================================
+
+
+// =====================================================================
+// 1. GEOGRAFÍA (catálogos importados, no capturados a mano)
+// =====================================================================
+// Fuentes para MX:
+//   Country    → ISO 3166-1 (MX)
+//   AdminArea1 → Estado. INEGI Marco Geoestadístico (CVE_ENT) + ISO 3166-2 (MX-JAL)
+//   AdminArea2 → Municipio / alcaldía. INEGI (CVE_MUN)
+//   PostalCode + Neighborhood → SEPOMEX (CP → colonias)
+// Los registros nunca se borran: se marcan con deprecatedAt.
+
+model Country {
+  code        String    @id // ISO 3166-1 alpha-2: "MX"
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  config      CountryConfig?
+  adminAreas1 AdminArea1[]
+  postalCodes PostalCode[]
+  priceTiers  PriceTier[]
+  addresses   Address[]
+}
+
+model CountryConfig {
+  countryCode     String   @id
+  defaultCurrency String   // "MXN" → Currency.code
+  locale          String   // "es-MX"
+  phonePrefix     String   // "+52"
+  // Etiquetas visibles por nivel: { "adminArea1": "Estado", "adminArea2": "Municipio", "neighborhood": "Colonia" }
+  adminLabels     Json
+  // Orden y obligatoriedad de los campos de dirección del formulario
+  addressFormat   Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  country         Country  @relation(fields: [countryCode], references: [code])
+}
+
+// Estado (MX) / Departamento (CO)
+model AdminArea1 {
+  id            String    @id @default(uuid())
+  countryCode   String
+  name          String
+  isoCode       String?   // "MX-JAL"
+  officialCode  String    // INEGI CVE_ENT: "14"
+  source        String    // "INEGI"
+  sourceVersion String
+  deprecatedAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  country       Country      @relation(fields: [countryCode], references: [code])
+  adminAreas2   AdminArea2[]
+
+  @@unique([countryCode, officialCode])
+}
+
+// Municipio / alcaldía
+model AdminArea2 {
+  id            String    @id @default(uuid())
+  adminArea1Id  String
+  name          String
+  officialCode  String    // INEGI CVE_MUN: "039"
+  lat           Float?    // centroide
+  lng           Float?
+  population    Int?
+  source        String
+  sourceVersion String
+  deprecatedAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  adminArea1    AdminArea1     @relation(fields: [adminArea1Id], references: [id])
+  neighborhoods Neighborhood[]
+  addresses     Address[]
+  priceTiers    PriceTier[]
+
+  @@unique([adminArea1Id, officialCode])
+}
+
+model PostalCode {
+  id            String    @id @default(uuid())
+  countryCode   String
+  code          String    // "44100"
+  deprecatedAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  country       Country        @relation(fields: [countryCode], references: [code])
+  neighborhoods Neighborhood[]
+
+  @@unique([countryCode, code])
+}
+
+// Colonia (MX) / Barrio (CO). Se llama Neighborhood porque "Settlement"
+// ya existe en bouquet (liquidación de la cuenta).
+model Neighborhood {
+  id            String    @id @default(uuid())
+  adminArea2Id  String
+  postalCodeId  String?
+  name          String
+  type          String?   // SEPOMEX: Colonia, Fraccionamiento, Barrio...
+  officialCode  String?   // SEPOMEX id_asenta_cpcons
+  source        String
+  sourceVersion String
+  deprecatedAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  adminArea2    AdminArea2  @relation(fields: [adminArea2Id], references: [id])
+  postalCode    PostalCode? @relation(fields: [postalCodeId], references: [id])
+  addresses     Address[]
+
+  @@index([postalCodeId])
+}
+
+// Dirección estructurada y reutilizable (hoy Restaurant.address es un string)
+model Address {
+  id               String      @id @default(uuid())
+  countryCode      String
+  adminArea2Id     String      // municipio → estado → país
+  neighborhoodId   String?     // colonia
+  postalCode       String?
+  street           String
+  exteriorNumber   String?
+  interiorNumber   String?
+  reference        String?     // "entre calle X y Y", "frente al parque"
+  formattedAddress String?
+  // Coordenada oficial: el PIN que confirmó el restaurante en el mapa
+  lat              Float
+  lng              Float
+  coordSource      CoordSource
+  accuracyMeters   Float?
+  provider         String?     // "mapbox" | "google" | "nominatim"
+  providerPlaceId  String?
+  verifiedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  country          Country       @relation(fields: [countryCode], references: [code])
+  adminArea2       AdminArea2    @relation(fields: [adminArea2Id], references: [id])
+  neighborhood     Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+  restaurants      Restaurant[]
+
+  @@index([adminArea2Id])
+  @@index([lat, lng]) // filtro por recuadro antes de haversine. A futuro: PostGIS
+}
+
+enum CoordSource {
+  PIN_CONFIRMED // el restaurante movió/confirmó el pin (preferido)
+  GEOCODER      // sugerencia del proveedor sin confirmar
+  CENTROID      // respaldo: centroide del municipio/CP
+}
+
+// Rango de precio RELATIVO por país o municipio ($, $$, $$$, $$$$)
+model PriceTier {
+  id                 String      @id @default(uuid())
+  countryCode        String
+  adminArea2Id       String?     // null = vale para todo el país
+  level              Int         // 1..4
+  label              String      // "$$"
+  minPerPersonCents  Int
+  maxPerPersonCents  Int?
+  currency           String
+  validFrom          DateTime
+  validTo            DateTime?
+  createdAt          DateTime    @default(now())
+
+  country            Country     @relation(fields: [countryCode], references: [code])
+  adminArea2         AdminArea2? @relation(fields: [adminArea2Id], references: [id])
+
+  @@index([countryCode, adminArea2Id, level])
+}
+
+
+// =====================================================================
+// 2. CATÁLOGOS DE COMIDA Y RESTAURANTE
+// =====================================================================
+
+model Cuisine {
+  id        String    @id @default(uuid())
+  slug      String    @unique // "italiana"
+  name      String
+  parentId  String?   // jerarquía: "mexicana" → "mariscos sinaloenses"
+  createdAt DateTime  @default(now())
+
+  parent           Cuisine?  @relation("CuisineTree", fields: [parentId], references: [id])
+  children         Cuisine[] @relation("CuisineTree")
+  restaurants      RestaurantCuisine[]
+  canonicalDishes  CanonicalDish[]
+  dinerPreferences DinerCuisinePreference[]
+  dinerAffinities  DinerAffinity[]
+}
+
+model Ingredient {
+  id         String   @id @default(uuid())
+  slug       String   @unique
+  name       String
+  group      String?  // "lácteo", "proteína", "verdura"...
+  createdAt  DateTime @default(now())
+
+  canonicalDishes CanonicalDishIngredient[]
+  menuItems       MenuItemIngredient[]
+  modifierOptions ModifierOption[]   // "sin cebolla" → cebolla
+}
+
+// Lista fija de alérgenos (base: NOM-051 / UE-14)
+model Allergen {
+  id        String   @id @default(uuid())
+  slug      String   @unique // "gluten", "crustaceos", "cacahuate"...
+  name      String
+  createdAt DateTime @default(now())
+
+  canonicalDishes CanonicalDishAllergen[]
+  menuItems       MenuItemAllergen[]
+  diners          DinerAllergen[]
+}
+
+model DietaryTag {
+  id        String   @id @default(uuid())
+  slug      String   @unique // "vegano", "vegetariano", "sin-gluten", "keto"
+  name      String
+  createdAt DateTime @default(now())
+
+  menuItems MenuItemDietaryTag[]
+  diners    DinerDietaryTag[]
+}
+
+// Servicios y ambiente: terraza, pet friendly, familiar, cita, negocios...
+model Attribute {
+  id        String        @id @default(uuid())
+  slug      String        @unique
+  name      String
+  kind      AttributeKind
+  createdAt DateTime      @default(now())
+
+  restaurants RestaurantAttribute[]
+}
+
+enum AttributeKind {
+  SERVICE   // terraza, estacionamiento, reservas, wifi, accesible
+  AMBIENCE  // familiar, cita, negocios, rápido, fiesta
+}
+
+
+// =====================================================================
+// 3. RESTAURANTE (datos que da el restaurante en el alta)
+// =====================================================================
+
+model RestaurantCuisine {
+  restaurantId String
+  cuisineId    String
+  isPrimary    Boolean  @default(false)
+
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  cuisine      Cuisine    @relation(fields: [cuisineId], references: [id])
+
+  @@id([restaurantId, cuisineId])
+}
+
+model RestaurantAttribute {
+  restaurantId String
+  attributeId  String
+
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  attribute    Attribute  @relation(fields: [attributeId], references: [id])
+
+  @@id([restaurantId, attributeId])
+}
+
+// Horarios en la HORA LOCAL del restaurante (Restaurant.timezone)
+model RestaurantHours {
+  id           String   @id @default(uuid())
+  restaurantId String
+  dayOfWeek    Int      // 0 = domingo … 6 = sábado
+  opensAt      String   // "13:00"
+  closesAt     String   // "23:30" (si closesAt < opensAt, cierra al día siguiente)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, dayOfWeek])
+}
+
+model RestaurantPhoto {
+  id           String   @id @default(uuid())
+  restaurantId String
+  url          String
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+// CALCULADO por un job (patrón AnalyticsJobRun). Nadie lo captura a mano.
+model RestaurantStats {
+  restaurantId              String   @id
+  avgTicketPerSessionCents  Int?     // Settlement.totalCents promedio
+  avgTicketPerPaxCents      Int?     // / DiningSession.pax
+  computedPriceTierLevel    Int?     // nivel 1..4 según PriceTier de su municipio
+  avgVisitRating            Float?
+  visitRatingCount          Int      @default(0)
+  sessionCount30d           Int      @default(0)
+  uniqueDiners90d           Int      @default(0)
+  repeatRate90d             Float?
+  computedAt                DateTime
+  jobRunId                  String?
+
+  restaurant                Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+
+// =====================================================================
+// 4. PLATILLO
+// =====================================================================
+// Tres niveles (el mismo patrón de copia que bouquet ya usa entre
+// TemplateItem y RestaurantMenuItem):
+//   CanonicalDish      → QUÉ platillo es ("carbonara"). Catálogo de Puzzle.
+//                         Atributos POR DEFECTO.
+//   TemplateItem       → platillo de la plantilla de la cadena. Apunta a su canónico.
+//   RestaurantMenuItem → lo que REALMENTE se sirve. Sus atributos son la VERDAD
+//                         (alérgenos incluidos): se copian del canónico al crearlo
+//                         y el restaurante los ajusta. OJO: en bouquet un platillo
+//                         puede existir SIN plantilla (templateItemId es opcional),
+//                         por eso los atributos no pueden vivir solo en TemplateItem.
+
+model CanonicalDish {
+  id          String     @id @default(uuid())
+  slug        String     @unique // "carbonara"
+  name        String
+  cuisineId   String?
+  course      DishCourse
+  protein     Protein?
+  spiceLevel  Int?       // 0..3, típico
+  isShareable Boolean    @default(false) // guacamole, nachos, botanas
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  cuisine       Cuisine?                  @relation(fields: [cuisineId], references: [id])
+  aliases       CanonicalDishAlias[]
+  ingredients   CanonicalDishIngredient[]
+  allergens     CanonicalDishAllergen[]
+  templateItems TemplateItem[]
+  menuItems     RestaurantMenuItem[]
+
+  @@index([cuisineId, course])
+}
+
+// Nombres alternativos ("spaghetti alla carbonara"). Crece con cada
+// confirmación del restaurante y alimenta la homologación (KNN).
+model CanonicalDishAlias {
+  id              String   @id @default(uuid())
+  canonicalDishId String
+  alias           String   // normalizado: minúsculas, sin acentos
+  source          String   // "SEED" | "CONFIRMED"
+  createdAt       DateTime @default(now())
+
+  canonicalDish   CanonicalDish @relation(fields: [canonicalDishId], references: [id], onDelete: Cascade)
+
+  @@unique([canonicalDishId, alias])
+  @@index([alias])
+}
+
+model CanonicalDishIngredient {
+  canonicalDishId String
+  ingredientId    String
+  isMain          Boolean @default(false)
+
+  canonicalDish   CanonicalDish @relation(fields: [canonicalDishId], references: [id], onDelete: Cascade)
+  ingredient      Ingredient    @relation(fields: [ingredientId], references: [id])
+
+  @@id([canonicalDishId, ingredientId])
+}
+
+model CanonicalDishAllergen {
+  canonicalDishId String
+  allergenId      String
+
+  canonicalDish   CanonicalDish @relation(fields: [canonicalDishId], references: [id], onDelete: Cascade)
+  allergen        Allergen      @relation(fields: [allergenId], references: [id])
+
+  @@id([canonicalDishId, allergenId])
+}
+
+// --- Atributos del platillo SERVIDO ---------------------------------
+
+model MenuItemIngredient {
+  menuItemId   String
+  ingredientId String
+  isMain       Boolean @default(false)
+
+  menuItem     RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient         @relation(fields: [ingredientId], references: [id])
+
+  @@id([menuItemId, ingredientId])
+}
+
+// OBLIGATORIO. Se usa como FILTRO DURO, nunca como peso del modelo.
+model MenuItemAllergen {
+  menuItemId String
+  allergenId String
+  mayContain Boolean @default(false) // trazas
+
+  menuItem   RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  allergen   Allergen           @relation(fields: [allergenId], references: [id])
+
+  @@id([menuItemId, allergenId])
+}
+
+model MenuItemDietaryTag {
+  menuItemId   String
+  dietaryTagId String
+
+  menuItem     RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  dietaryTag   DietaryTag         @relation(fields: [dietaryTagId], references: [id])
+
+  @@id([menuItemId, dietaryTagId])
+}
+
+// Historial de precio. Hoy RestaurantMenuItem.priceCents se SOBRESCRIBE y
+// OrderItem.unitPriceCents solo guarda el precio de lo que SÍ se pidió.
+// Sin esto no se sabe el precio "a la fecha" de los platillos NO pedidos.
+model MenuItemPriceHistory {
+  id         String    @id @default(uuid())
+  menuItemId String
+  priceCents Int
+  validFrom  DateTime
+  validTo    DateTime?
+
+  menuItem   RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@index([menuItemId, validFrom])
+}
+
+// Historial de disponibilidad. Hoy isSoldOut solo guarda el estado ACTUAL.
+// Sin esto no se sabe qué había en el menú en cada visita (los negativos).
+model MenuItemAvailabilityEvent {
+  id          String   @id @default(uuid())
+  menuItemId  String
+  isAvailable Boolean
+  reason      AvailabilityReason
+  occurredAt  DateTime @default(now())
+
+  menuItem    RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@index([menuItemId, occurredAt])
+}
+
+enum AvailabilityReason {
+  CREATED
+  SOLD_OUT
+  RESTOCKED
+  ARCHIVED
+  RESTORED
+}
+
+// Cómo se asignó el canónico a un platillo
+enum CanonicalSource {
+  SUGGESTED  // la homologación (KNN) lo propuso, nadie lo confirmó
+  CONFIRMED  // el restaurante aceptó la sugerencia
+  MANUAL     // el restaurante eligió otro
+}
+
+// "sin cebolla", "extra picante": modificadores que dicen algo del gusto
+enum ModifierEffect {
+  REMOVE
+  ADD
+  EXTRA
+  SUBSTITUTE
+}
+
+enum DishCourse {
+  STARTER
+  MAIN
+  SIDE
+  DESSERT
+  DRINK
+  OTHER
+}
+
+enum Protein {
+  BEEF
+  PORK
+  CHICKEN
+  FISH
+  SEAFOOD
+  PLANT
+  EGG
+  CHEESE
+  MIXED
+  NONE
+}
+
+// CALCULADO por un job, por platillo de cada restaurante
+model MenuItemStats {
+  menuItemId        String   @id // RestaurantMenuItem.id
+  quantitySold30d   Int      @default(0)
+  uniqueDiners90d   Int      @default(0)
+  reorderRate90d    Float?
+  sharedRate90d     Float?   // % de las veces que se pidió para compartir
+  avgDishRating     Float?
+  dishRatingCount   Int      @default(0)
+  computedAt        DateTime
+  jobRunId          String?
+
+  menuItem          RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+}
+
+
+// =====================================================================
+// 5. COMENSAL REGISTRADO (solo ellos reciben recomendaciones)
+// =====================================================================
+// Diner ≠ AppUser. AppUser es el personal del restaurante. Otra sesión, otra cookie.
+
+model Diner {
+  id           String      @id @default(uuid())
+  displayName  String?
+  status       DinerStatus @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?   // derechos ARCO: cancelación
+
+  identities         DinerIdentity[]
+  profile            DinerProfile?
+  consents           DinerConsent[]
+  cuisinePreferences DinerCuisinePreference[]
+  dietaryTags        DinerDietaryTag[]
+  allergens          DinerAllergen[]
+  guests             Guest[]            // historial = Guest → OrderItem
+  visitRatings       VisitRating[]
+  dishRatings        DishRating[]
+  events             InteractionEvent[]
+  affinities         DinerAffinity[]
+  slates             RecommendationSlate[]
+  experiments        ExperimentAssignment[]
+}
+
+enum DinerStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+// Formas de entrar. Una persona puede tener correo Y celular.
+model DinerIdentity {
+  id          String       @id @default(uuid())
+  dinerId     String
+  type        IdentityType
+  value       String       // NORMALIZADO: email en minúsculas / teléfono E.164 (+52XXXXXXXXXX)
+  verifiedAt  DateTime?
+  isPrimary   Boolean      @default(false)
+  lastUsedAt  DateTime?    // números reciclados: reverificar tras mucho tiempo sin uso
+  createdAt   DateTime     @default(now())
+
+  diner       Diner        @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+
+  @@unique([type, value])
+  @@index([dinerId])
+}
+
+enum IdentityType {
+  EMAIL
+  PHONE
+  GOOGLE // futuro
+}
+
+// Código de un solo uso (sin contraseñas). Se guarda HASHEADO.
+model DinerVerificationCode {
+  id            String              @id @default(uuid())
+  identityType  IdentityType
+  identityValue String              // normalizado
+  codeHash      String
+  channel       VerificationChannel
+  purpose       String              // "LOGIN" | "LINK_IDENTITY"
+  attempts      Int                 @default(0)
+  ipAddress     String?             // límite de envíos por IP (anti SMS pumping)
+  expiresAt     DateTime
+  consumedAt    DateTime?
+  createdAt     DateTime            @default(now())
+
+  @@index([identityType, identityValue, createdAt])
+}
+
+enum VerificationChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+}
+
+// Se crea EN EL REGISTRO (onboarding). Todo saltable.
+model DinerProfile {
+  dinerId                String    @id
+  declaredPriceTierLevel Int?      // rango declarado ($..$$$$) → arranque en frío
+  spiceLevel             Int?      // 0..3
+  homeAdminArea2Id       String?   // municipio base (opcional, NO dirección exacta)
+  birthYear              Int?
+  onboardingCompletedAt  DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  diner                  Diner     @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+}
+
+model DinerConsent {
+  id         String      @id @default(uuid())
+  dinerId    String
+  type       ConsentType
+  version    String      // versión del aviso de privacidad aceptado
+  grantedAt  DateTime    @default(now())
+  revokedAt  DateTime?
+
+  diner      Diner       @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+
+  @@index([dinerId, type])
+}
+
+enum ConsentType {
+  PRIVACY_NOTICE      // aviso de privacidad (LFPDPPP)
+  PERSONALIZATION     // usar su historial para recomendar
+  MARKETING           // promociones
+  SENSITIVE_HEALTH    // alergias/restricciones: consentimiento EXPRESO
+}
+
+model DinerCuisinePreference {
+  dinerId   String
+  cuisineId String
+  createdAt DateTime @default(now())
+
+  diner     Diner   @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+  cuisine   Cuisine @relation(fields: [cuisineId], references: [id])
+
+  @@id([dinerId, cuisineId])
+}
+
+model DinerDietaryTag {
+  dinerId      String
+  dietaryTagId String
+  createdAt    DateTime @default(now())
+
+  diner        Diner      @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+  dietaryTag   DietaryTag @relation(fields: [dietaryTagId], references: [id])
+
+  @@id([dinerId, dietaryTagId])
+}
+
+// DATO SENSIBLE. Solo con ConsentType.SENSITIVE_HEALTH vigente.
+model DinerAllergen {
+  dinerId    String
+  allergenId String
+  createdAt  DateTime @default(now())
+
+  diner      Diner    @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+  allergen   Allergen @relation(fields: [allergenId], references: [id])
+
+  @@id([dinerId, allergenId])
+}
+
+
+// =====================================================================
+// 6. CALIFICACIONES (solo califica quien consumió)
+// =====================================================================
+
+model VisitRating {
+  id              String   @id @default(uuid())
+  diningSessionId String
+  guestId         String   @unique // una calificación por comensal por visita
+  dinerId         String?  // null si era anónimo
+  restaurantId    String   // desnormalizado para consultas
+  stars           Int      // 1..5
+  comment         String?
+  createdAt       DateTime @default(now())
+
+  diningSession   DiningSession @relation(fields: [diningSessionId], references: [id], onDelete: Cascade)
+  guest           Guest         @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  diner           Diner?        @relation(fields: [dinerId], references: [id], onDelete: SetNull)
+  restaurant      Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, createdAt])
+  @@index([dinerId])
+}
+
+model DishRating {
+  id          String   @id @default(uuid())
+  orderItemId String   @unique // atado a lo que realmente pidió
+  dinerId     String?
+  menuItemId  String   // desnormalizado
+  stars       Int      // 1..5
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  orderItem   OrderItem          @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  diner       Diner?             @relation(fields: [dinerId], references: [id], onDelete: SetNull)
+  menuItem    RestaurantMenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@index([menuItemId])
+  @@index([dinerId])
+}
+
+
+// =====================================================================
+// 7. EVENTOS IMPLÍCITOS
+// =====================================================================
+
+model InteractionEvent {
+  id            String    @id @default(uuid())
+  dinerId       String?
+  anonymousId   String?   // cookie del dispositivo (anónimos: datos a nivel platillo)
+  guestId       String?
+  restaurantId  String?
+  menuItemId    String?
+  type          EventType
+  // contexto: { "pax": 4, "hour": 21, "source": "QR", "slateItemId": "...", "query": "algo cremoso" }
+  context       Json?
+  occurredAt    DateTime  @default(now())
+
+  diner         Diner?    @relation(fields: [dinerId], references: [id], onDelete: SetNull)
+
+  @@index([dinerId, occurredAt])
+  @@index([restaurantId, occurredAt])
+  @@index([menuItemId, type])
+}
+
+enum EventType {
+  MENU_VIEW
+  ITEM_VIEW
+  ADD_TO_CART
+  REMOVE_FROM_CART
+  SEARCH
+  SOMMELIER_QUERY
+  RESTAURANT_VIEW
+  RESTAURANT_SAVE        // favorito
+  RECOMMENDATION_CLICK
+}
+
+
+// =====================================================================
+// 8. SALIDAS DEL MODELO Y EXPERIMENTOS
+// =====================================================================
+
+// CALCULADO: afinidad de la persona con cada cocina
+model DinerAffinity {
+  dinerId    String
+  cuisineId  String
+  score      Float    // 0..1
+  computedAt DateTime
+
+  diner      Diner   @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+  cuisine    Cuisine @relation(fields: [cuisineId], references: [id])
+
+  @@id([dinerId, cuisineId])
+}
+
+// Una LISTA mostrada a un comensal en una visita: "para ti", "para la mesa"
+// o (fase 2) restaurantes. Se calcula al abrir el menú.
+// Sin esto NO se puede medir el efecto de la posición ni hacer A/B.
+model RecommendationSlate {
+  id              String     @id @default(uuid())
+  dinerId         String?
+  guestId         String?
+  diningSessionId String?
+  restaurantId    String?
+  listType        SlateType
+  course          DishCourse? // null = lista mezclada
+  modelVersion    String
+  experimentArm   String      // "control" (popularidad) | "model"
+  shownAt         DateTime    @default(now())
+
+  diner           Diner?         @relation(fields: [dinerId], references: [id], onDelete: SetNull)
+  guest           Guest?         @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  diningSession   DiningSession? @relation(fields: [diningSessionId], references: [id], onDelete: SetNull)
+  restaurant      Restaurant?    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items           RecommendationSlateItem[]
+
+  @@index([dinerId, shownAt])
+  @@index([diningSessionId])
+}
+
+// Cada platillo de la lista, con su POSICIÓN.
+// La conversión NO se guarda: se DERIVA uniendo con OrderItem
+// (misma sesión, mismo guest, pedido después de shownAt).
+model RecommendationSlateItem {
+  id         String    @id @default(uuid())
+  slateId    String
+  menuItemId String?   // platillos
+  position   Int       // 1 = arriba
+  score      Float
+  reason     String?   // "Porque pediste carbonara en Trattoria X"
+  clickedAt  DateTime?
+
+  slate      RecommendationSlate @relation(fields: [slateId], references: [id], onDelete: Cascade)
+  menuItem   RestaurantMenuItem? @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+
+  @@index([slateId, position])
+  @@index([menuItemId])
+}
+
+enum SlateType {
+  DISHES_FOR_YOU   // "para ti"
+  DISHES_TO_SHARE  // "para la mesa"
+  RESTAURANTS      // fase 2
+}
+
+// Grupo de control (p. ej. 5–10 % ve el orden por popularidad) para la prueba A/B.
+// La asignación es por COMENSAL y estable (no cambia de visita en visita).
+model ExperimentAssignment {
+  id         String   @id @default(uuid())
+  dinerId    String
+  experiment String   // "dish-ranker-v1"
+  arm        String   // "control" | "model"
+  assignedAt DateTime @default(now())
+
+  diner      Diner    @relation(fields: [dinerId], references: [id], onDelete: Cascade)
+
+  @@unique([dinerId, experiment])
+}
+
+
+// =====================================================================
+// CAMBIOS A MODELOS EXISTENTES (bouquet/prisma/schema.prisma)
+// =====================================================================
+// Como comentario: aplicarlos lo decide Diego. Validado con
+// `prisma validate` uniendo este archivo con el esquema actual.
+//
+// model Restaurant {
+//   + addressId         String?   // reemplaza al string `address` (migrar y luego deprecar)
+//   + timezone          String    @default("America/Mexico_City") // IANA, por restaurante
+//   + structuredAddress Address?  @relation(fields: [addressId], references: [id]) // "address" ya existe como String
+//   + cuisines          RestaurantCuisine[]
+//   + attributes        RestaurantAttribute[]
+//   + hours             RestaurantHours[]
+//   + photos            RestaurantPhoto[]
+//   + stats             RestaurantStats?
+//   + visitRatings      VisitRating[]
+//   + slates            RecommendationSlate[]
+// }
+//
+// model TemplateItem {
+//   + canonicalDishId   String?
+//   + canonicalSource   CanonicalSource?
+//   + canonicalDish     CanonicalDish? @relation(fields: [canonicalDishId], references: [id])
+// }
+//
+// model RestaurantMenuItem {
+//   + canonicalDishId      String?          // se hereda de la plantilla; se puede corregir
+//   + canonicalSource      CanonicalSource?
+//   + canonicalConfidence  Float?           // score del KNN al sugerir
+//   + canonicalConfirmedAt DateTime?
+//   + course               DishCourse?      // normaliza las categorías libres ("Para empezar")
+//   + protein              Protein?
+//   + spiceLevel           Int?             // 0..3
+//   + isShareable          Boolean?         // null = usar el del canónico
+//   + canonicalDish        CanonicalDish?   @relation(fields: [canonicalDishId], references: [id])
+//   + ingredients          MenuItemIngredient[]
+//   + allergens            MenuItemAllergen[]
+//   + dietaryTags          MenuItemDietaryTag[]
+//   + priceHistory         MenuItemPriceHistory[]
+//   + availabilityEvents   MenuItemAvailabilityEvent[]
+//   + stats                MenuItemStats?
+//   + dishRatings          DishRating[]
+//   + slateItems           RecommendationSlateItem[]
+//   + @@index([canonicalDishId])
+// }
+//
+// model ModifierOption {
+//   + ingredientId  String?          // "sin cebolla" → cebolla
+//   + effect        ModifierEffect?  // REMOVE | ADD | EXTRA | SUBSTITUTE
+//   + ingredient    Ingredient?      @relation(fields: [ingredientId], references: [id])
+// }
+//
+// model OrderItem {
+//   + isShared   Boolean  @default(false)  // "¿es para compartir?" (lo pidió guestId para la mesa)
+//   + dishRating DishRating?
+// }
+//
+// model Guest {
+//   + dinerId      String?         // une la visita con la persona registrada
+//   + diner        Diner?          @relation(fields: [dinerId], references: [id], onDelete: SetNull)
+//   + visitRating  VisitRating?
+//   + slates       RecommendationSlate[]
+//   + @@index([dinerId])
+// }
+//
+// model DiningSession {
+//   + visitRatings VisitRating[]
+//   + slates       RecommendationSlate[]
+// }

@@ -1,0 +1,19 @@
+# Reglas de construcción de variables.
+
+# Las variables usan el canónico PREDICHO por la homologación (igual que en
+# producción). canonical_true solo existe en ground_truth/ y nunca se usa aquí.
+canonical_column: canonical_pred
+
+# Todo perfil, popularidad y estadística se calcula solo con datos anteriores a la visita.
+point_in_time: true
+
+fallback:
+  # Pedidos mínimos del restaurante para usar su popularidad. Se elige en validación.
+  restaurant_min_orders: null
+
+encoding:
+  one_hot: [course, protein, day_of_week, hour_band, cuisine]
+  target_encoding: [restaurant_id, canonical_pred, adminarea2]
+
+missing:
+  strategies: [median, knn, indicator]

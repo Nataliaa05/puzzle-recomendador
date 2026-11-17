@@ -1,0 +1,78 @@
+# Parámetros de la simulación.
+# Los valores son INICIALES DE TRABAJO: se calibran en notebooks/04 y cada
+# corrida guarda una copia de este archivo en data/synthetic/<run_id>/.
+
+seed: 20261116
+run_name: base
+metro_area: CDMX            # 16 alcaldías (CVE_ENT 09). Ampliable a la ZM del Valle de México
+
+scale:
+  n_restaurants: 1500
+  n_canonical_dishes: 400
+  n_diners: 20000
+  months: 12
+
+world:
+  scian_prefix: "7225"       # servicios de preparación de alimentos y bebidas
+  stratify_by: [scian_code, adminarea2]
+
+supply:
+  menu_size: {min: 20, max: 80}
+  price_lognormal_sigma: 0.35
+  name_variation_rate: 0.6           # % de platillos con nombre distinto al canónico
+  canonical_confirmation_rate: 0.7   # % de sugerencias KNN que el restaurante confirma/corrige
+  evolution:                         # por mes
+    new_item_rate: 0.03
+    archive_rate: 0.02
+    price_change_rate: 0.05
+    daily_sold_out_rate: 0.02
+
+population:
+  taste_dirichlet_concentration: 0.5   # bajo = fiel a pocas cocinas
+  price_sensitivity_lognormal: {mu: 0.0, sigma: 0.5}
+  sharer_trait_beta: {a: 1.5, b: 6.0}
+  course_habit_beta:
+    STARTER: {a: 2.0, b: 3.0}
+    DRINK: {a: 4.0, b: 2.0}
+    DESSERT: {a: 1.5, b: 4.0}
+  taste_drift_blend: 0.02              # mezcla mensual con un nuevo sorteo Dirichlet
+  onboarding:
+    completion_rate: 0.6
+    answer_flip_rate: 0.15             # ruido de las respuestas frente a la verdad
+
+visits:
+  inter_visit_weibull: {shape: 1.3, scale_days: 14}
+  hourly_profile:                      # perfil empírico (hora local: peso)
+    "13": 0.10
+    "14": 0.20
+    "15": 0.15
+    "19": 0.10
+    "20": 0.20
+    "21": 0.15
+    "22": 0.10
+  consideration_set_size: 30
+
+choice:
+  gumbel_scale: 1.0
+  affinity_weight: 1.0
+  position_effect: 0.0                 # 0 = sin sesgo de posición
+
+sharing:
+  base_probability: 0.25
+  pax_slope: 0.10
+  least_misery_weight: 0.3             # mezcla promedio / miseria mínima
+
+ratings:
+  base_rate: 0.15
+  mnar_extremity_weight: 1.0
+
+noise:
+  gps_jitter_m: {min: 10, max: 50}
+  waiter_unassigned_rate: 0.05
+  duplicate_account_rate: 0.01
+  outlier_party_rate: 0.002
+
+calibration:
+  method: latin_hypercube
+  n_samples: 30
+  params: [choice.gumbel_scale, population.price_sensitivity_lognormal.sigma, choice.affinity_weight]

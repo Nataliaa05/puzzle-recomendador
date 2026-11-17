@@ -1,0 +1,34 @@
+# Partición, modelos y espacios de búsqueda.
+
+split:                     # meses relativos al inicio de la simulación (1..12)
+  train: [1, 9]
+  valid: [10, 10]
+  test: [11, 12]
+  cv_rolling_folds: 4
+
+groups:
+  for_you: [guest_visit_id, course]
+  to_share: [session_id]
+  drop_groups_without_positive: true
+
+lgbm_ranker:
+  objective: lambdarank
+  metric: ndcg
+  eval_at: [3, 5]
+  early_stopping_rounds: 50
+
+optuna:
+  sampler: tpe
+  n_trials: 100
+  search_space:
+    num_leaves: {low: 15, high: 255, log: true}
+    learning_rate: {low: 0.01, high: 0.2, log: true}
+    min_child_samples: {low: 10, high: 200, log: true}
+    feature_fraction: {low: 0.5, high: 1.0}
+    lambda_l2: {low: 1.0e-3, high: 10.0, log: true}
+
+evaluation:
+  k: [3, 5]
+  bootstrap_iterations: 2000
+  permutation_iterations: 5000
+  min_relevant_improvement: null   # se define en notebooks/00 antes de tocar el test
