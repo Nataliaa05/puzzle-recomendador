@@ -1,0 +1,33 @@
+# Validación de la simulación (notebook 04).
+#
+# Las bandas se declaran ANTES de ver los resultados y con justificación de
+# dominio. Ajustarlas después para que "todo pase" invalidaría la validación.
+
+stylized_facts:
+  # Regla 80/20 de la ingeniería de menús: pocos platillos concentran la mayoría de las ventas.
+  top20_share_dishes: [0.60, 0.85]
+  # La gente va sobre todo a su cocina favorita, pero también explora.
+  favorite_cuisine_share: [0.30, 0.65]
+  # Señal aprendible: parte de los pedidos repiten un platillo canónico ya pedido.
+  # Muy bajo = el historial no predice nada; muy alto = problema trivial.
+  repeat_rate_canonical: [0.20, 0.60]
+  # Mesas que piden algo para compartir.
+  shared_table_rate: [0.10, 0.40]
+  # Cola pesada de frecuencia: el comensal del percentil 90 sale bastante más que el típico.
+  visits_p90_over_p50: [1.8, 5.0]
+
+fit_to_config:
+  # Variación total máxima aceptable entre lo simulado y lo configurado.
+  max_total_variation: 0.03
+
+calibration:
+  n_runs: 12
+  n_diners: 1000
+  months: 3
+  bounds:
+    choice.gumbel_scale: [0.5, 2.0]
+    choice.affinity_weight: [0.5, 2.0]
+    price_sensitivity_scale: [0.5, 2.0]   # multiplica la λ de cada comensal
+
+monte_carlo:
+  n_replicas: 5
