@@ -446,6 +446,8 @@ pyogrio==0.13.0
     # via geopandas
 pyparsing==3.3.3
     # via matplotlib
+pypdf==7.1.1
+    # via puzzle-recsys
 pyproj==3.8.0
     # via geopandas
 pytest==9.2.0

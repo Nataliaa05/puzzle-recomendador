@@ -1,0 +1,245 @@
+restaurant_key,section,item_name,description,price_mxn,price_unit,course,source_image
+salvaje,Entradas,Kushiages,3 piezas de queso,140,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Edamames,200 gr. Naturales o spicy,140,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Rollitos de cangrejo,"6 piezas, cangrejo y chipotle en teriyaki tamarindo",190,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Dumplings,5 piezas rellenos de carne de res en salsa de soya dulce,190,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Camarones roca,150 grs.,235,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Alitas thai,12 alitas en salsa agridulce y salsa ranch,285,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Tostadas mixtas,"4 piezas: atún, salmón, camarón y pulpo",260,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Entradas,Tostada Sugoi,"Paté de camarón, atún fresco, salsa macha y aguacate",155,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Sopas,Miso,"Tofu, shiitake y bok choy",125,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Sopas,Bao soup,"Dumplings, chilli oil, nori y tofu",150,PLATILLO,STARTER,menu_1.57.04-p.m.png
+salvaje,Sopas,Ramen,"Pork belly, yakisoba, huevo, narutomaki y verduras",240,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Yakimeshi,Yakimeshi vegetales,,130,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Yakimeshi,Yakimeshi pollo,,140,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Yakimeshi,Yakimeshi rib eye,,190,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Yakimeshi,Yakimeshi mariscos,,210,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Yakimeshi,Yakimeshi Salvaje,"Mixto, kanikama, queso crema y aguacate",225,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Poke bowl,Poke veggie,"Vegetales tempura, aguacate, pepino, edamames y mayo spicy",210,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Poke bowl,Poke camarón,"Camarón spicy, poro frito, pepino, mango, aguacate y salsa thai",240,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Poke bowl,Poke salmón,"Salmón, edamames, aguacate, cebolla morada, zanahoria y piña",250,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Poke bowl,Poke atún,"Atún, salsa de jengibre, aguacate, pepino, edamames y cebolla morada",230,PLATILLO,MAIN,menu_1.57.04-p.m.png
+salvaje,Sashimi,Sashimi de atún,,175,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Sashimi,Sashimi de salmón,,210,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Sashimi,Sashimi de camarón,,210,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Nigiris,Nigiri de anguila,2 piezas,140,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Nigiris,Nigiri de atún,2 piezas,95,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Nigiris,Nigiri de salmón,2 piezas,95,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Nigiris,Nigiri de camarón,2 piezas,95,PLATILLO,STARTER,menu_1.57.14-p.m.png
+salvaje,Nigiris,Mix de nigiris,10 piezas,590,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Anguila,"Salmón, camarón, queso crema, aguacate, mayo spicy y anguila ahumada",230,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Butter crab,"Cangrejo, masago, mayo tartufata, ghee y soya",185,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Alaska roll,"Salmón ahumado, cangrejo tempura, aguacate y queso crema",180,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Crunchy,"Camarón, queso crema, aguacate, tempura y poro frito",175,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Tiger,"Camarón, kanikama, masago, salsa de anguila, ajonjolí, aguacate y mayo spicy",190,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Dragon,"Camarón tempura, aguacate, pepino, mango y mayo spicy",180,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Eureka,"Atún, aguacate, camarón, limón eureka y mayo spicy",185,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Salmon Yasei,"Salmón, espárrago, kanikama y mayo spicy",175,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Salvaje,"Camarón, tampico, aguacate, espinaca deshidratada y mayo spicy",180,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Spicy,"Atún o salmón marinado, aguacate, tanuki, mayo spicy, poro frito y soya dulce",150,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Sunset,"Camarón, aguacate y pepino. Forrado en mango y salsa thai",180,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Makis,Rib eye roll,"Espárrago, jalapeño, aguacate, pepino y mayo macha",185,PLATILLO,MAIN,menu_1.57.14-p.m.png
+salvaje,Especiales,Bangkok,Curry amarillo al coco con pollo y camarones,310,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Pad thai,"Camarones, fideos, salsa de tamarindo y cacahuate",290,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Noodles Sichuan,"Camarones, arrachera, noodles, chilli oil y ajonjolí",345,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Rib eye & fettuccine,En salsa de hongos y queso parmesano,370,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Rib eye teriyaki,Con arroz y verduras,370,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Salmón teriyaki,Con arroz y verduras,370,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Teppanyaki camarón,,390,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Teppanyaki rib eye,,390,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Teppanyaki salmón,,390,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Teppanyaki mar y tierra,,420,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Brocheta de camarón,,210,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Brocheta de salmón y piña,,210,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Brocheta de pollo y brócoli,,180,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Brocheta de lomo de cerdo,,160,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Especiales,Bacon jam burger,"Carne de res, queso, mermelada de tocino y mayo spicy",260,PLATILLO,MAIN,menu_1.56.48-p.m.png
+salvaje,Postres,Mostachón de mango,,200,PLATILLO,DESSERT,menu_1.56.48-p.m.png
+salvaje,Postres,Brownie con helado y caramelo,,200,PLATILLO,DESSERT,menu_1.56.48-p.m.png
+salvaje,Postres,New York cheesecake,,200,PLATILLO,DESSERT,menu_1.56.48-p.m.png
+salvaje,Postres,Tiramisú,,200,PLATILLO,DESSERT,menu_1.56.48-p.m.png
+salvaje,Desayunos,Papaya,"Yogurt, granola y miel",95,PLATILLO,STARTER,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Huevos salvajes,"Sopes con huevo, bañados en salsa tatemada, con panela y nopal asados",220,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Huevos rotos,"Papas cambray, 2 huevos estrellados y jamón serrano",210,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Machaca,"Huevos revueltos, machaca, pico de gallo, aguacate, frijoles y tortillas",215,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Omelette Lindavista,"Salmón ahumado, hongos, queso crema y alcaparras, con espárragos, aguacate y pan de masa madre",300,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Omelette mediterráneo,"Corazón de alcachofa, espinacas, tomate deshidratado y queso de cabra",185,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Omelette americano,"Pechuga de pavo, tocino y queso manchego, con ensalada caprese",190,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Omelette de flor de calabaza,"Flor de calabaza, queso manchego y de cabra, bañado en crema de poro",185,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Chilaquiles,"Verdes o rojos, con aguacate, frijoles, queso, crema y cebolla",130,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Enchiladas suizas,"De pollo, gratinadas en queso manchego y bañadas en salsa poblana",170,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Rib eye con chilaquiles,Corte de rib eye con chilaquiles verdes o rojos y frijoles refritos,340,PLATILLO,MAIN,desayunos_2.01.22-p.m.png
+salvaje,Desayunos,Rib eye y enmoladas,"Rellenas de queso, bañadas en mole y ajonjolí, con rib eye",340,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Avocado toast,"Pan de masa madre, pesto, aguacate, burrata, jitomate y huevos",180,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Salmon toast,"Pan de masa madre, aguacate, salmón ahumado, masago y alcaparras",210,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Tacos de barbacoa de picaña,"En tortilla de harina o maíz con queso, pico de gallo, limón y aguacate",190,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Molletes 3 quesos,"Baguette, frijoles refritos, queso manchego, provolone y de cabra",165,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Torta de lechón,"Lomo de lechón horneado, guacamole, chicharrón crujiente y cebollas encurtidas",195,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Panino de pavo y tocino,"Pechuga de pavo, tocino, jitomate, lechuga, cebolla y aderezo miel mostaza",195,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Panino de pollo,"Pechuga de pollo, jamón serrano, tomate cherry, espinaca y balsámico",210,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Cowboy sandwich,"Sirloin, queso manchego, cebolla caramelizada, spicy mayo y jugo de carne",225,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Desayunos,Pan francés,"Pan brioche, frutos del bosque, coulis de moras y miel maple",175,PLATILLO,MAIN,desayunos_2.01.37-p.m.png
+salvaje,Extras,Chorizo argentino,,55,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Pollo,,50,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Huevo,,25,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Aguacate,,25,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Pechuga de pavo,,65,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Barbacoa,,70,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Tocino,,45,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Extras,Queso manchego,,25,PLATILLO,SIDE,desayunos_2.01.37-p.m.png
+salvaje,Mixología,King of the Congo,"Ron de coco 30 ml, St Germain 30 ml, lychee, soda de coco y limón",205,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Magia,"Vodka 45 ml, frutos rojos, lychee y arándano",165,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Paloma Salvaje,"Tequila 45 ml, Ancho Reyes, mix de cítricos",170,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Kanji,"Ginebra 45 ml, aperol 30 ml, hierbabuena y agua tónica",175,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Fizz,"St Germain 20 ml, bourbon 45 ml, almíbar y romero",165,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Wikiki,"Ron 45 ml, piña, limón, soda de coco",165,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Tinto maya,"Vino tinto 60 ml, mezcal 45 ml y frambuesas",150,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Zipolite,"Mezcal 45 ml, jamaica, piña y limón",160,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Geisha,"Tequila 45 ml, sake 30 ml, lychee",165,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Quetzal,"Mezcal 45 ml, naranja, toronja, chile de árbol y miel de agave",160,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mixología,Balam,"Mezcal 45 ml, pepino, piña, limón y sal de chapulín",160,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mocktails,Mandril rojo,"Frutos rojos, maracuyá y limón",105,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mocktails,Honolulu,Piña clarificada y coco,95,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mocktails,Selva,"Pepino, jarabe, limón y agua mineral",95,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mocktails,Paradise,Soda de maracuyá y limón,100,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Mocktails,The rose,Frutos rojos y agua de rosas,100,COPA,DRINK,menu_2.27.52-p.m.png
+salvaje,Aperitivos,Aperol spritz,"Aperol 45 ml, prosecco 90 ml, agua mineral y naranja",160,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Aperitivos,St Germain spritz,"Licor de flor de sauco 45 ml, prosecco 90 ml, agua mineral y naranja",180,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Aperitivos,Jungle spritz,"Licor de grosella 45 ml, prosecco 90 ml, agua mineral y naranja",170,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Digestivos,Espresso martini,"Vodka 45 ml, licor de café 30 ml, café espresso y jarabe natural",180,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Digestivos,Negroni,"Ginebra 30 ml, campari 30 ml, vermouth rojo 30 ml y twist de naranja",195,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Digestivos,Old fashioned,"Bourbon 60 ml, bitter de angostura, azúcar y twist de naranja",195,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Digestivos,Carajillo,"Licor 43 45 ml, shot de café espresso",150,COPA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza importada,Estrella de Galicia,España 355 ml,110,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza importada,Sapporo,Japón 473 ml,140,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza importada,Amstel Ultra,Países Bajos 330 ml,70,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza importada,Heineken,Países Bajos 330 ml,70,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza nacional,Bohemia cristal,355 ml,70,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza nacional,Bohemia clara / obscura,355 ml,70,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza nacional,Carta Blanca caguamita,300 ml,60,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza nacional,Tecate roja y light,400 ml,70,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Cerveza nacional,Draft XX lager / XX ámbar,400 ml,90,BOTELLA,DRINK,menu_2.28.03-p.m.png
+salvaje,Vinos tintos,Maison Nicola Merlot,"Merlot, Francia, Languedoc-Roussillon",680,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Maison Nicola Merlot,"Merlot, Francia, Languedoc-Roussillon",150,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Matzu Picaro,"Tempranillo Tinta de Toro, España, Toro",880,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Matzu Picaro,"Tempranillo Tinta de Toro, España, Toro",180,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Honoro Vera,"Garnacha, España, Juan Gil",940,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Honoro Vera,"Garnacha, España, Juan Gil",210,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Laya,"Garnacha tintorera, Monastrell, España, Almansa",940,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Laya,"Garnacha tintorera, Monastrell, España, Almansa",210,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Bistrologie,"Pinot, Grenache, Carignan, Syrah, Cabernet sauvignon, Francia",960,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos tintos,Bistrologie,"Pinot, Grenache, Carignan, Syrah, Cabernet sauvignon, Francia",215,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos blancos,Paco & Lola N. 12,"Albariño, España, Rías Baixas",925,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos blancos,Paco & Lola N. 12,"Albariño, España, Rías Baixas",250,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos blancos,Sexy Fish,"Torrontés y Chardonnay, Argentina, Mendoza",680,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos blancos,Sexy Fish,"Torrontés y Chardonnay, Argentina, Mendoza",150,COPA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos rosados,Raza Rosé Vinho Verde,"Vinhão Padeiro, Portugal, Vinho Verde",640,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Vinos rosados,Rosé d'Anjou,"Cabernet, Gamay y Grillo, Francia, Loira",840,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Espumosos,Norton Cosecha Especial Extra Brut,"Chardonnay, Argentina, Luján de Cuyo",925,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Espumosos,Taittinger Brut,"Francia, Champagne",1800,BOTELLA,DRINK,menu_2.27.34-p.m.png
+salvaje,Tequila,Casa Dragones Joven,750 ml,450,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Casa Dragones Joven,750 ml,7200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Don Julio 70,700 ml,280,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Don Julio 70,700 ml,2500,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Don Julio Blanco,700 ml,170,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Don Julio Blanco,700 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Enemigo Extra Añejo,750 ml,480,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Enemigo Extra Añejo,750 ml,7680,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Maestro Dobel Blanco,700 ml,180,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Maestro Dobel Blanco,700 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Maestro Dobel Diamante,700 ml,240,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Maestro Dobel Diamante,700 ml,2600,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Tradicional Plata,950 ml,160,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Tradicional Plata,950 ml,1800,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Tradicional Reposado,950 ml,160,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Tradicional Reposado,950 ml,1800,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Herradura Reposado,950 ml,170,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,Herradura Reposado,950 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,7 Leguas,700 ml,170,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Tequila,7 Leguas,700 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,400 Conejos Joven,700 ml,160,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,400 Conejos Joven,700 ml,1800,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Ultima y Nos Vamos,750 ml,120,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Ultima y Nos Vamos,750 ml,1600,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Mezcal Unión Joven,700 ml,195,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Mezcal Unión Joven,700 ml,1800,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Monte Lobos,750 ml,220,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Monte Lobos,750 ml,2300,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Ojo de Tigre,750 ml,220,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Mezcal,Ojo de Tigre,750 ml,2300,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Grey Goose,750 ml,240,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Grey Goose,750 ml,2500,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Smirnoff Proof,1000 ml,140,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Smirnoff Proof,1000 ml,1600,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Absolut Vodka,750 ml,150,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Absolut Vodka,750 ml,1700,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Stolichnaya,750 ml,170,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Vodka,Stolichnaya,750 ml,1800,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Beefeater Red,750 ml,165,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Beefeater Red,750 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Bombay Sapphire,750 ml,140,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Bombay Sapphire,750 ml,1900,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Bulldog,750 ml,220,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Bulldog,750 ml,3000,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Hendrick's,750 ml,295,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Hendrick's,750 ml,3900,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Tanqueray,750 ml,160,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Gin,Tanqueray,750 ml,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Torres 10,,170,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Torres 10,,2200,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Hennessy V.S.,,250,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Hennessy V.S.,,3500,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Martell,,240,COPA,DRINK,menu_2.28.20-p.m.png
+salvaje,Brandy / Cognac,Martell,,3400,BOTELLA,DRINK,menu_2.28.20-p.m.png
+salvaje,Ron,Appleton Estate 12 años,750 ml,140,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Appleton Estate 12 años,750 ml,1800,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Bacardí Blanco,980 ml,120,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Bacardí Blanco,980 ml,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Havana 7 años,700 ml,160,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Havana 7 años,700 ml,1800,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Malibu,750 ml,110,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Malibu,750 ml,1200,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Rum Chata,750 ml,200,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Rum Chata,750 ml,1500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Zacapa RVA 23,750 ml,290,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Ron,Zacapa RVA 23,750 ml,3500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Buchanan's 12 años,750 ml,265,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Buchanan's 12 años,750 ml,2500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Chivas 12 años,750 ml,219,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Chivas 12 años,750 ml,2400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jack Daniel's Black,700 ml,140,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jack Daniel's Black,700 ml,1800,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jameson,750 ml,130,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jameson,750 ml,1600,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jim Beam,700 ml,170,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Jim Beam,700 ml,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Johnnie Walker Etiqueta Negra,750 ml,275,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Johnnie Walker Etiqueta Negra,750 ml,2800,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Johnnie Walker Etiqueta Roja,750 ml,160,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Whiskey,Johnnie Walker Etiqueta Roja,750 ml,1800,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Blanco,,150,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Blanco,,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Rojo Clásico,,150,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Rojo Clásico,,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Rosado Clásico,,150,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Vermouth,Yzaguirre Rosado Clásico,,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Amaretto Disaronno,,130,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Amaretto Disaronno,,1500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Anís Chinchón dulce,,90,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Anís Chinchón dulce,,1300,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Anís Chinchón seco,,90,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Anís Chinchón seco,,1300,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Fernet Branca,,120,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Fernet Branca,,1500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Fernet Wind,,90,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Fernet Wind,,1210,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Frangelico,,120,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Frangelico,,1440,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Jägermeister,,140,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Jägermeister,,1500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Oporto Ferreira,,130,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Oporto Ferreira,,1500,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Sambuca Vaccari Blanco,,90,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Sambuca Vaccari Blanco,,1300,BOTELLA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Sambuca Vaccari Nero,,100,COPA,DRINK,menu_2.28.41-p.m.png
+salvaje,Cremas y licores,Sambuca Vaccari Nero,,1400,BOTELLA,DRINK,menu_2.28.41-p.m.png

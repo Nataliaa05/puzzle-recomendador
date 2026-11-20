@@ -18,11 +18,12 @@ Cuando un comensal registrado entra a un restaurante, aunque sea la primera vez,
 | [`docs/supuestos.md`](docs/supuestos.md) | Todo lo que no sale de datos reales |
 | [`docs/diccionario_datos.md`](docs/diccionario_datos.md) | Contrato de las tablas |
 | [`docs/model_card.md`](docs/model_card.md) | Uso, límites y sesgos del modelo |
+| [`data/external/real_restaurants/`](data/external/real_restaurants/README.md) | **Anexo:** base real de restaurantes y menús (Salvaje, URSO) y piloto de menús web. No se integra al pipeline; sirve para validar |
 
 ## Estructura
 
 ```
-config/       parámetros (YAML): rutas, simulación, features, modelos
+config/       parámetros (YAML): rutas, fuentes, simulación, validación, features, modelos
 data/         raw · external · interim · synthetic/<run_id> · processed · Data_model   (fuera de git)
 docs/         propuesta, esquema, ADRs, supuestos, diccionario, model card
 models/       artefactos entrenados
