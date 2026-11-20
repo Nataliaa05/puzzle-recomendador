@@ -116,7 +116,11 @@ visits:
     "20": 0.15
     "21": 0.14
     "22": 0.08
-  pax_probs: {1: 0.18, 2: 0.36, 3: 0.17, 4: 0.16, 5: 0.07, 6: 0.06}
+  pax_probs: {1: 0.18, 2: 0.36, 3: 0.17, 4: 0.16, 5: 0.07, 6: 0.06}   # base: entre semana, comida o cena
+  party_size_context:                  # supuesto S16: el contexto deforma pax_probs
+    large_from: 3                      # "mesa grande" = 3 personas o más
+    weekend_factor: 1.4                # viernes a domingo: salidas en familia y con amigos
+    breakfast_factor: 0.7              # el desayuno es más individual o en pareja
   min_hours_between_visits: 3          # una persona no puede estar en dos mesas en menos de 3 h
   registered_companion_rate: 0.25      # % de acompañantes que también son usuarios registrados
   companion_neighbors: 200             # los acompañantes registrados salen de sus 200 vecinos más cercanos
@@ -144,6 +148,40 @@ choice:
     pricey_pool: 300                   # restaurantes más caros de la ciudad considerados
     extra_candidates: 20               # cuántos de ellos (dentro del radio) entran al conjunto
     distance_sensitivity_factor: 0.4   # en una ocasión se acepta ir más lejos
+  context:                             # supuesto S16: no se come igual a las 9 que a las 21
+    weight: 1.0                        # escala de los multiplicadores de cocina (en log)
+    cuisine_period:                    # [desayuno, comida, cena]; cocina no listada = 1 (neutral)
+      cafeteria: [3.0, 0.8, 0.5]
+      familiar_cadena: [2.0, 1.0, 0.7]
+      antojitos: [1.4, 0.9, 1.3]
+      mexicana: [1.3, 1.2, 0.7]
+      mexicana_regional: [0.7, 1.2, 1.0]
+      tacos_tortas: [0.8, 0.9, 1.5]
+      mariscos: [0.3, 1.5, 0.6]        # la marisquería en CDMX es de mediodía
+      pizza: [0.15, 0.8, 1.4]
+      hamburguesas: [0.2, 0.9, 1.3]
+      pollo: [0.3, 1.3, 0.9]
+      japonesa: [0.1, 1.0, 1.3]
+      china: [0.1, 1.1, 1.1]
+      otras_asiaticas: [0.1, 1.0, 1.2]
+      italiana: [0.2, 1.0, 1.3]
+      argentina_cortes: [0.1, 1.1, 1.3]
+      espanola: [0.2, 1.1, 1.2]
+      francesa: [0.6, 1.0, 1.1]
+      vegetariana: [1.0, 1.1, 0.9]
+      medio_oriente: [0.3, 1.0, 1.2]
+      peruana: [0.2, 1.2, 1.0]
+    course_rate_period:                # multiplica la prob. de pedir cada tipo de plato
+      desayuno: {MAIN: 0.9, DRINK: 1.25, STARTER: 0.5, SIDE: 0.6, DESSERT: 0.7}
+      comida: {STARTER: 1.2}           # la sopa de la comida corrida
+      cena: {MAIN: 0.95, DRINK: 1.1, DESSERT: 1.1}
+    breakfast_dishes: [chilaquiles_verdes, chilaquiles_cafe, huevos_rancheros, huevos_motulenos,
+                       molletes, molletes_cadena, hot_cakes, hotcakes_cadena, bowl_avena, concha,
+                       croissant, tamal, atole, cafe_americano, cafe_latte, espresso, cafe_refill,
+                       chocolate_caliente, jugo_naranja, jugo_verde, smoothie]
+    breakfast_bonus: {desayuno: 1.0, comida: -0.3, cena: -0.6}
+    alcohol_ingredients: [cerveza, vino, tequila, mezcal]
+    alcohol_bonus: {desayuno: -2.5, comida: 0.0, cena: 0.5}
 
 sharing:
   base_probability: 0.15

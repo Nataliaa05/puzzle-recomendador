@@ -37,6 +37,7 @@ import pandas as pd
 from sklearn.neighbors import BallTree
 
 from puzzle_recsys.catalog.library import Library
+from puzzle_recsys.features.calendar import WEEKEND_DAYS, period_index
 from puzzle_recsys.simulation.choice import (
     DinerVector,
     ItemFeatures,
@@ -46,6 +47,12 @@ from puzzle_recsys.simulation.choice import (
     ideal_prices,
     restaurant_utility,
     shared_group_utility,
+)
+from puzzle_recsys.simulation.context import (
+    course_rate,
+    cuisine_period_log,
+    dish_period_bonus,
+    pax_probabilities,
 )
 from puzzle_recsys.simulation.population import TASTE_COURSES, DinerTastes, drift_cuisine_affinity
 
@@ -77,6 +84,8 @@ class WorldIndex:
     rest_price_level: np.ndarray  # ticket esperado por persona (pesos)
     course_reference: dict[str, float]
     cuisines: tuple[str, ...]
+    dish_period_bonus: np.ndarray  # (N, 3) bono de utilidad del platillo por franja
+    cuisine_period: np.ndarray  # (3, C) log-multiplicador de cada cocina por franja
 
 
 def _local_ns(series: pd.Series, tz: str) -> np.ndarray:
@@ -215,6 +224,10 @@ def build_world_index(
         rest_price_level=restaurants["restaurant_id"].map(level).fillna(level.median()).to_numpy(),
         course_reference=(base / base["MAIN"]).to_dict(),
         cuisines=tuple(cuisines),
+        dish_period_bonus=dish_period_bonus(
+            items["canonical_true"], library, choice_cfg["context"]
+        ),
+        cuisine_period=cuisine_period_log(cuisines, choice_cfg["context"]),
     )
     canonical_appeal = appeal.rename("appeal").reset_index()
     return index, canonical_appeal
@@ -447,6 +460,14 @@ def simulate_visits(
     pax_values = np.array([int(p) for p in vcfg["pax_probs"]])
     pax_p = np.array(list(vcfg["pax_probs"].values()), dtype=float)
     pax_p /= pax_p.sum()
+    pax_by_context = {
+        (period, weekend): pax_probabilities(
+            pax_values, pax_p, period=period, weekend=weekend, cfg=vcfg["party_size_context"]
+        )
+        for period in range(3)
+        for weekend in (False, True)
+    }
+    ctx_cfg = ccfg["context"]
     base_frequency = np.ones(n) if frequency is None else np.asarray(frequency, dtype=float)
     frequency = base_frequency * rng.lognormal(0.0, vcfg["frequency_lognormal_sigma"], n)
     weib = vcfg["inter_visit_weibull"]
@@ -466,11 +487,11 @@ def simulate_visits(
         )
         for day in days:
             weekday = int((day // _DAY_NS + 3) % 7)
-            visit_t = (
-                day
-                + int(rng.choice(hours, p=hour_p)) * _HOUR_NS
-                + int(rng.integers(0, 60)) * 60 * 10**9
-            )
+            hour = int(rng.choice(hours, p=hour_p))
+            visit_t = day + hour * _HOUR_NS + int(rng.integers(0, 60)) * 60 * 10**9
+            # Contexto: franja de comida y fin de semana (S16).
+            period = int(period_index(np.array([hour]))[0])
+            weekend = weekday in WEEKEND_DAYS
             month = min(int((visit_t - start) / (30.44 * _DAY_NS)), months - 1)
             # Ya está sentado en otra mesa como acompañante: esa visita no ocurre.
             if not agenda.is_free(i, visit_t):
@@ -516,6 +537,11 @@ def simulate_visits(
                 float(tastes.variety_seeking[i]),
                 ccfg,
             )
+            # A las 9 gana la cafetería; a las 21, la taquería.
+            cand_cuisine = index.rest_cuisine_idx[cand]
+            u_rest = u_rest + np.where(
+                cand_cuisine >= 0, index.cuisine_period[period, np.maximum(cand_cuisine, 0)], 0.0
+            )
             pick = gumbel_choice(u_rest, ccfg["gumbel_scale"], rng)
             r = int(cand[pick])
             avail, prices = available_at(index, index.rest_items[r], visit_t)
@@ -533,7 +559,7 @@ def simulate_visits(
                     )
                 )
             else:
-                pax = int(rng.choice(pax_values, p=pax_p))
+                pax = int(rng.choice(pax_values, p=pax_by_context[(period, weekend)]))
             session_id = f"s{len(ledger.sessions):07d}"
             members: list[tuple[str | None, DinerVector, np.ndarray, float]] = [
                 (f"d{i:06d}", host, tastes.course_habit[i], float(tastes.sharer[i]))
@@ -610,11 +636,13 @@ def simulate_visits(
             for g, (_, vec, habit, _) in enumerate(members):
                 ideal = ideal_prices(typical, vec.budget, refs, w_budget)
                 u_all = dish_utility(index.items, avail, prices, ideal, vec, ccfg)
+                u_all = u_all + index.dish_period_bonus[avail, period]
                 ok = feasible(index.items, avail, vec)
                 for course in ("MAIN", *TASTE_COURSES):
-                    p_course = (
+                    base_rate = (
                         vcfg["main_course_rate"] if course == "MAIN" else habit[habit_pos[course]]
                     )
+                    p_course = course_rate(base_rate, course, period, ctx_cfg)
                     if rng.random() >= p_course:
                         continue
                     mask = ok & (courses == course)
@@ -643,20 +671,23 @@ def simulate_visits(
             if pax >= 2 and rng.random() < p_share:
                 options = np.flatnonzero(index.items.shareable[avail])
                 if len(options):
-                    utilities = np.vstack(
-                        [
-                            dish_utility(
-                                index.items,
-                                avail[options],
-                                prices[options],
-                                ideal_prices(
-                                    typical[options], m[1].budget, refs[options], w_budget
-                                ),
-                                m[1],
-                                ccfg,
-                            )
-                            for m in members
-                        ]
+                    utilities = (
+                        np.vstack(
+                            [
+                                dish_utility(
+                                    index.items,
+                                    avail[options],
+                                    prices[options],
+                                    ideal_prices(
+                                        typical[options], m[1].budget, refs[options], w_budget
+                                    ),
+                                    m[1],
+                                    ccfg,
+                                )
+                                for m in members
+                            ]
+                        )
+                        + index.dish_period_bonus[avail[options], period]
                     )
                     eligible = np.vstack(
                         [feasible(index.items, avail[options], m[1]) for m in members]

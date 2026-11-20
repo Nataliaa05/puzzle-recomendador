@@ -263,3 +263,30 @@ def test_no_registered_diner_is_at_two_tables_at_once(run) -> None:
 def test_no_diner_appears_twice_in_the_same_table(run) -> None:
     guests = run["out"]["guests"].dropna(subset=["diner_id"])
     assert not guests.duplicated(subset=["session_id", "diner_id"]).any()
+
+
+def test_context_shapes_where_and_what_people_eat(run) -> None:
+    """Regresión: la hora no influía en nada (EDA bivariado, notebook 07)."""
+    from puzzle_recsys.features.calendar import WEEKEND_DAYS, period_index
+
+    out, index = run["out"], run["index"]
+    tz = load_simulation().calendar["timezone"]
+    s = out["dining_sessions"].copy()
+    local = s["opened_at"].dt.tz_convert(tz)
+    s["period"] = period_index(local.dt.hour.to_numpy())
+    s["weekend"] = local.dt.day_of_week.isin(WEEKEND_DAYS).to_numpy()
+    cuisine = dict(zip(index.rest_ids, index.rest_cuisine_idx, strict=True))
+    cafe = index.cuisines.index("cafeteria")
+    s["cafe"] = s["restaurant_id"].map(cuisine) == cafe
+    by_period = s.groupby("period")["cafe"].mean()
+    assert by_period[0] > 2 * by_period[2]  # cafetería: desayuno >> cena
+
+    pos = {m: k for k, m in enumerate(index.item_ids)}
+    lines = out["order_items"].merge(s[["session_id", "period"]], on="session_id")
+    k = lines["menu_item_id"].map(pos).to_numpy()
+    alcohol = index.dish_period_bonus[k, 0] < -1
+    drinks = index.items.course[k] == "DRINK"
+    share = pd.Series(alcohol[drinks]).groupby(lines["period"].to_numpy()[drinks]).mean()
+    assert share[0] < 0.5 * share[2]  # alcohol: casi nada en el desayuno
+
+    assert s.loc[s["weekend"], "pax"].mean() > s.loc[~s["weekend"], "pax"].mean()
