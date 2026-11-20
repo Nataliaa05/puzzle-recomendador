@@ -129,3 +129,27 @@ def plot_frequencies(table: pd.DataFrame, *, title: str, ax: Axes | None = None)
     ax.set_title(title)
     ax.set_xlabel("% del total")
     return ax
+
+
+def plot_by_group(
+    df: pd.DataFrame,
+    value: str,
+    group: str,
+    *,
+    title: str,
+    order: list | None = None,
+    log: bool = False,
+    ax: Axes | None = None,
+) -> Axes:
+    """Cajas de ``value`` por ``group`` sin puntos atípicos (con millones de filas tapan todo)."""
+    if ax is None:
+        _, ax = plt.subplots(figsize=(6, 3.5))
+    groups = order if order is not None else sorted(df[group].dropna().unique())
+    data = [df.loc[df[group] == g, value].dropna() for g in groups]
+    ax.boxplot(data, tick_labels=[str(g) for g in groups], showfliers=False)
+    if log:
+        ax.set_yscale("log")
+    ax.set_title(title)
+    ax.set_ylabel(value)
+    ax.tick_params(axis="x", rotation=30)
+    return ax
