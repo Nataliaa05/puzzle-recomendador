@@ -43,7 +43,7 @@ Comensal abre el menú
 
 - **Todas se calculan "a la fecha":** popularidad, perfiles y estadísticas usan **solo** información anterior a la visita.
 - **Se calculan con el mismo proceso que existirá en producción:** el canónico usado es el **predicho** por la homologación (KNN + confirmación simulada del restaurante), **nunca** el verdadero.
-- **Alergias:** el filtro duro usa las del comensal ("para ti") o la **unión** de las de toda la mesa ("para la mesa").
+- **Alergias:** en "para ti", filtro duro con las del comensal. En "para la mesa", el platillo se comparte **solo entre quienes pueden comerlo** (al menos 2) y se advierte a quién excluye (ADR 0001).
 
 ### Modelos que compiten
 
@@ -94,7 +94,7 @@ Son el contrato de datos = [`schema-recomendador.prisma`](schema-recomendador.pr
 | Pedido para compartir | La probabilidad sube con `pax`; lo pide quien tiene el rasgo compartidor; la utilidad del grupo mezcla promedio y miseria mínima + Gumbel |
 | Ticket | **Se calcula** con lo pedido |
 | Calificaciones | Logit ordenado + faltantes no aleatorios (MNAR) |
-| Ruido | GPS, onboarding incompleto (MAR), outliers, duplicados, pedidos del mesero sin comensal |
+| Ruido | GPS, onboarding incompleto (MCAR), outliers, duplicados, pedidos del mesero sin comensal |
 | Calibración | **Hipercubo latino** sobre la escala del Gumbel, λ y el peso de la afinidad |
 | Validación | Hechos estilizados, Kolmogorov-Smirnov / Wasserstein, réplicas Monte Carlo |
 

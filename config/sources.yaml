@@ -16,3 +16,8 @@ marco_geo:
   description: Marco Geoestadístico (Censo 2020), Ciudad de México
   url: https://www.inegi.org.mx/contenidos/productos/prod_serv/contenidos/espanol/bvinegi/productos/geografia/marcogeo/889463807469/09_ciudaddemexico.zip
   file: 09_ciudaddemexico.zip
+
+enigh:
+  description: ENIGH 2024 (INEGI), concentrado de hogares — gasto en alimentos fuera del hogar
+  url: https://www.inegi.org.mx/contenidos/programas/enigh/nc/2024/microdatos/enigh2024_ns_concentradohogar_csv.zip
+  file: enigh2024_ns_concentradohogar_csv.zip

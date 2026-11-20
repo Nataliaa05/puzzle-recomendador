@@ -600,19 +600,26 @@ def _close_intervals(prices: pd.DataFrame) -> pd.DataFrame:
 
 
 def _availability_events(
-    items: pd.DataFrame, end: pd.Timestamp, sold_out_rate: float, rng: np.random.Generator
+    items: pd.DataFrame,
+    end: pd.Timestamp,
+    sold_out_rate: float | np.ndarray,
+    rng: np.random.Generator,
 ) -> pd.DataFrame:
-    """Genera CREATED, pares SOLD_OUT/RESTOCKED y ARCHIVED de cada platillo."""
+    """Genera CREATED, pares SOLD_OUT/RESTOCKED y ARCHIVED de cada platillo.
+
+    ``sold_out_rate`` es una tasa diaria común o una por platillo (alineada con ``items``).
+    """
+    rates = np.broadcast_to(np.asarray(sold_out_rate, dtype=float), (len(items),))
     rows: list[tuple[str, pd.Timestamp, str, bool]] = []
-    for item_id, created, archived in zip(
-        items["menu_item_id"], items["created_at"], items["archived_at"], strict=True
+    for item_id, created, archived, rate in zip(
+        items["menu_item_id"], items["created_at"], items["archived_at"], rates, strict=True
     ):
         rows.append((item_id, created, "CREATED", True))
         last = archived if pd.notna(archived) else end
         first_day = created.normalize() + pd.Timedelta(days=1)
         n_days = (last.normalize() - first_day).days - 1  # el restock debe caer antes del final
         if n_days > 0:
-            k = int(rng.binomial(n_days, sold_out_rate))
+            k = int(rng.binomial(n_days, rate))
             for day in np.sort(rng.choice(n_days, size=k, replace=False)):
                 date = first_day + pd.Timedelta(days=int(day))
                 sold = date + pd.Timedelta(hours=float(rng.uniform(13, 22)))
