@@ -65,3 +65,67 @@ def plot_world(
         save_to.parent.mkdir(parents=True, exist_ok=True)
         ax.figure.savefig(save_to, dpi=150, bbox_inches="tight")
     return ax
+
+
+def plot_lorenz(counts: pd.Series, *, title: str, ax: Axes | None = None) -> Axes:
+    """Curva de Lorenz: qué % de los pedidos concentra cada % de platillos (más pedidos primero)."""
+    import numpy as np
+
+    values = np.sort(np.asarray(counts, dtype=float))[::-1]
+    x = np.arange(1, len(values) + 1) / len(values)
+    y = np.cumsum(values) / values.sum()
+    if ax is None:
+        _, ax = plt.subplots(figsize=(5, 4))
+    ax.plot(x, y, label="simulado")
+    ax.plot([0, 1], [0, 1], linestyle="--", color="grey", label="todos igual de populares")
+    ax.axvline(0.2, color="grey", linewidth=0.8)
+    ax.set_xlabel("fracción de platillos (más pedidos primero)")
+    ax.set_ylabel("fracción acumulada de pedidos")
+    ax.set_title(title)
+    ax.legend(loc="lower right")
+    return ax
+
+
+def plot_compare(
+    expected: pd.Series, observed: pd.Series, *, title: str, ax: Axes | None = None
+) -> Axes:
+    """Barras lado a lado: distribución configurada contra la simulada."""
+    frame = pd.DataFrame({"configurado": expected, "simulado": observed})
+    ax = frame.plot.bar(ax=ax, figsize=(6, 3.5), rot=0)
+    ax.set_title(title)
+    ax.set_ylabel("proporción")
+    return ax
+
+
+def plot_distribution(
+    series: pd.Series, *, title: str, log: bool = False, bins: int = 50, ax: Axes | None = None
+) -> Axes:
+    """Histograma con media y mediana marcadas; ``log=True`` usa bins logarítmicos.
+
+    La separación entre la media y la mediana deja ver la asimetría a simple vista.
+    """
+    import numpy as np
+
+    values = series.dropna().astype(float)
+    if ax is None:
+        _, ax = plt.subplots(figsize=(5, 3.5))
+    edges = np.geomspace(values.min(), values.max(), bins) if log else bins
+    ax.hist(values, bins=edges, color="#4C72B0", alpha=0.85)
+    ax.axvline(values.median(), color="black", linewidth=1.2, label="mediana")
+    ax.axvline(values.mean(), color="#C44E52", linestyle="--", linewidth=1.2, label="media")
+    if log:
+        ax.set_xscale("log")
+    ax.set_title(title)
+    ax.set_ylabel("frecuencia")
+    ax.legend(fontsize=8)
+    return ax
+
+
+def plot_frequencies(table: pd.DataFrame, *, title: str, ax: Axes | None = None) -> Axes:
+    """Barras horizontales de una tabla de ``frequency_table`` (columna ``%``)."""
+    if ax is None:
+        _, ax = plt.subplots(figsize=(5, 3.5))
+    table["%"].iloc[::-1].plot.barh(ax=ax, color="#4C72B0")
+    ax.set_title(title)
+    ax.set_xlabel("% del total")
+    return ax
