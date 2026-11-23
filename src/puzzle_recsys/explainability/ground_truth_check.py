@@ -97,3 +97,46 @@ def observed_signs(
         sign = "+" if rho >= min_abs_rho else "-" if rho <= -min_abs_rho else "0"
         rows.append({"feature": col, "rho": rho, "signo": sign})
     return pd.DataFrame(rows)
+
+
+PROTEINS = ("BEEF", "PORK", "CHICKEN", "FISH", "SEAFOOD", "PLANT", "EGG", "CHEESE", "MIXED")
+
+
+def truth_items(
+    menu: pd.DataFrame,
+    canonical_cuisine: pd.Series,
+    ingredients: pd.DataFrame,
+    appeal: pd.Series,
+    quality: pd.Series,
+    *,
+    cuisines: Sequence[str],
+    ingredient_names: Sequence[str],
+) -> pd.DataFrame:
+    """Atributos **verdaderos** de cada platillo, con los mismos índices que el simulador.
+
+    ``menu`` trae ``menu_item_id``, ``canonical_true``, ``protein`` y ``spice_level``;
+    ``ingredients`` es ``menu_item_attributes`` filtrado a ``kind == 'ingredient'``.
+    """
+    cuisine_pos = {c: k for k, c in enumerate(cuisines)}
+    protein_pos = {p: k for k, p in enumerate(PROTEINS)}
+    ing_pos = {n: k for k, n in enumerate(ingredient_names)}
+    ing = ingredients.groupby("menu_item_id")["value"].agg(lambda v: [ing_pos[x] for x in v])
+    return pd.DataFrame(
+        {
+            "cuisine_idx": menu["canonical_true"]
+            .map(canonical_cuisine)
+            .map(cuisine_pos)
+            .fillna(-1)
+            .astype(int)
+            .to_numpy(),
+            "protein_idx": menu["protein"].map(protein_pos).fillna(-1).astype(int).to_numpy(),
+            "ingredients": menu["menu_item_id"]
+            .map(ing)
+            .map(lambda v: v if isinstance(v, list) else [])
+            .to_numpy(),
+            "spice": menu["spice_level"].to_numpy(),
+            "appeal": menu["canonical_true"].map(appeal).to_numpy(),
+            "quality": menu["menu_item_id"].map(quality).to_numpy(),
+        },
+        index=menu["menu_item_id"].to_numpy(),
+    )

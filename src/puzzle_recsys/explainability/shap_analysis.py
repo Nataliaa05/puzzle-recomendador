@@ -68,3 +68,21 @@ def plot_dependence(
     ax.set_xlabel(x.name)
     ax.set_ylabel("SHAP")
     return ax
+
+
+def relative_to_query(values: pd.DataFrame, query_ids: np.ndarray | pd.Series) -> pd.DataFrame:
+    """Cada valor menos el promedio de su consulta.
+
+    En un ranking solo importa lo que **distingue** a un candidato de los demás de
+    su consulta. Una feature igual para todos los candidatos (p. ej. el ticket
+    habitual de la persona) mueve el puntaje de todos por igual y no cambia el
+    orden: su valor relativo es 0.
+    """
+    q = np.asarray(query_ids)
+    return values - values.groupby(q).transform("mean")
+
+
+def top_reasons(row: pd.Series, n: int = 3) -> str:
+    """Las ``n`` contribuciones de mayor magnitud, como texto: ``feature (+0.12)``."""
+    top = row.reindex(row.abs().sort_values(ascending=False).index[:n])
+    return ", ".join(f"{k} ({v:+.2f})" for k, v in top.items())
