@@ -7,10 +7,15 @@ from puzzle_recsys.eda.multivariate import (
     benzecri_inertia,
     cluster_diners,
     diner_behavior_matrix,
+    guest_trait,
     kmeans_scan,
+    latent_diner_traits,
     mca_summary,
     recovery_vs_truth,
     redundant_pairs,
+    sharing_by_table_trait,
+    table_categories,
+    trait_recovery,
 )
 
 
@@ -140,3 +145,68 @@ def test_recovery_vs_truth_separates_related_and_unrelated_traits() -> None:
     assert out.loc["ruido", "valor"] < 0.02
     assert out.loc["cocina_dominante", "metrica"] == "AMI"
     assert out.loc["cocina_dominante", "valor"] > 0.5
+
+
+def test_table_categories_bins_numbers_and_groups_rare_cuisines() -> None:
+    mesas = pd.DataFrame(
+        {
+            "franja": ["comida", "cena", "desayuno", "cena"],
+            "fin_de_semana": [False, True, False, True],
+            "cocina": ["mexicana", "mexicana", "pizza", "sushi"],
+            "pax": [1, 2, 4, 7],
+            "nivel_precio": [100.0, 200.0, 300.0, 400.0],
+            "personal": ["6 a 10", "6 a 10", "11 a 30", "11 a 30"],
+        }
+    )
+    out = table_categories(mesas, top_cuisines=1)
+    assert out["cocina"].tolist() == ["mexicana", "mexicana", "otras", "otras"]
+    assert out["personas"].astype(str).tolist() == ["1", "2", "3-4", "5+"]
+    assert out["nivel_precio"].astype(str).tolist() == ["Q1", "Q2", "Q3", "Q4"]
+    assert out["fin_de_semana"].tolist() == ["entre semana", "fin de semana"] * 2
+
+
+def test_trait_recovery_compares_each_observed_feature_with_its_latent_trait() -> None:
+    rng = np.random.default_rng(3)
+    latent = pd.DataFrame({"gusto": rng.normal(size=300), "otro": rng.normal(size=300)})
+    observed = pd.DataFrame({"pedido": latent["gusto"] + rng.normal(0, 0.3, 300)})
+    out = trait_recovery(observed, latent, [("pedido", "gusto"), ("pedido", "otro")])
+    assert out.loc[0, "rho"] > 0.8 and out.loc[0, "efecto"] == "fuerte"
+    assert abs(out.loc[1, "rho"]) < 0.15
+
+
+def test_sharing_by_table_trait_reports_share_rate_per_tercile() -> None:
+    sessions = pd.DataFrame({"session_id": ["s1", "s2", "s3", "s4"], "pax": [2, 2, 2, 1]})
+    guests = pd.DataFrame(
+        {
+            "session_id": ["s1", "s1", "s2", "s2", "s3", "s3", "s4"],
+            "trait": [0.1, 0.1, 0.5, 0.5, 0.9, 0.9, 0.9],
+        }
+    )
+    order_items = pd.DataFrame({"session_id": ["s3", "s1"], "is_shared": [True, False]})
+    out = sharing_by_table_trait(sessions, guests, order_items, q=3)
+    assert out["mesas"].tolist() == [1, 1, 1]  # la mesa de 1 persona no cuenta
+    assert out["pct_comparten"].tolist() == [0.0, 0.0, 100.0]
+
+
+def test_latent_traits_follow_duplicate_accounts_to_the_true_person() -> None:
+    tastes = pd.DataFrame(
+        {
+            "diner_id": ["d1", "d2"],
+            "cuisine_affinity": [np.array([0.7, 0.3]), np.array([0.1, 0.9])],
+            "sharer": [0.2, 0.8],
+        }
+    )
+    dups = pd.DataFrame({"diner_id": ["d2-dup"], "diner_id_true": ["d2"]})
+    out = latent_diner_traits(tastes, dups, pd.Index(["d1", "d2-dup"]), ["mexicana", "pizza"])
+    assert out.loc["d2-dup", "sharer"] == 0.8
+    assert out["cocina_dominante"].tolist() == ["mexicana", "pizza"]
+
+
+def test_guest_trait_reads_registered_and_anonymous_tastes() -> None:
+    guests = pd.DataFrame({"guest_id": ["g1", "g2"], "session_id": ["s1", "s1"]})
+    refs = pd.DataFrame({"guest_id": ["g1", "g2"], "taste_ref": ["d1", "a1"]})
+    registered = pd.DataFrame({"diner_id": ["d1"], "sharer": [0.3]})
+    anonymous = pd.DataFrame({"diner_id": ["a1"], "sharer": [0.6]})
+    out = guest_trait(guests, refs, [registered, anonymous], "sharer")
+    assert out.set_index("guest_id")["trait"].to_dict() == {"g1": 0.3, "g2": 0.6}
+    assert set(out.columns) == {"guest_id", "session_id", "trait"}

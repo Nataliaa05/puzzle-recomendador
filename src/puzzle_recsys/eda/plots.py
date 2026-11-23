@@ -153,3 +153,38 @@ def plot_by_group(
     ax.set_ylabel(value)
     ax.tick_params(axis="x", rotation=30)
     return ax
+
+
+def plot_corr_matrix(corr: pd.DataFrame, *, title: str, ax: Axes | None = None) -> Axes:
+    """Mapa de calor de una matriz de correlación, con escala simétrica de -1 a 1."""
+    if ax is None:
+        _, ax = plt.subplots(figsize=(9, 8))
+    im = ax.imshow(corr.to_numpy(), cmap="RdBu_r", vmin=-1, vmax=1)
+    ax.set_xticks(range(len(corr.columns)), corr.columns, rotation=90, fontsize=7)
+    ax.set_yticks(range(len(corr.index)), corr.index, fontsize=7)
+    ax.figure.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="rho de Spearman")
+    ax.set_title(title)
+    return ax
+
+
+def plot_mca_map(categorias: pd.DataFrame, *, title: str, ax: Axes | None = None) -> Axes:
+    """Mapa de categorías del MCA en las dimensiones 1 y 2, coloreado por variable.
+
+    Las categorías cercanas aparecen juntas en las mismas mesas; las alejadas del
+    origen son las que más distinguen.
+    """
+    if ax is None:
+        _, ax = plt.subplots(figsize=(8, 6))
+    for (variable, grupo), color in zip(
+        categorias.groupby("variable"), plt.cm.tab10.colors, strict=False
+    ):
+        ax.scatter(grupo["dim1"], grupo["dim2"], color=color, label=variable, s=25)
+        for _, row in grupo.iterrows():
+            ax.annotate(row["categoria"], (row["dim1"], row["dim2"]), fontsize=7, color=color)
+    ax.axhline(0, color="grey", linewidth=0.5)
+    ax.axvline(0, color="grey", linewidth=0.5)
+    ax.set_xlabel("dimensión 1")
+    ax.set_ylabel("dimensión 2")
+    ax.set_title(title)
+    ax.legend(fontsize=7)
+    return ax

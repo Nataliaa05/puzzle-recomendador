@@ -16,12 +16,13 @@ Usado en: notebooks 08.
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 import prince
+from scipy import stats
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import adjusted_mutual_info_score, silhouette_score
@@ -107,6 +108,27 @@ def redundant_pairs(corr: pd.DataFrame, threshold: float = 0.7) -> pd.DataFrame:
     ]
     out = pd.DataFrame(rows, columns=["a", "b", "rho"])
     return out.reindex(out["rho"].abs().sort_values(ascending=False).index).reset_index(drop=True)
+
+
+def table_categories(mesas: pd.DataFrame, *, top_cuisines: int = 8) -> pd.DataFrame:
+    """Variables categóricas de la mesa para el MCA.
+
+    Las cocinas fuera de las ``top_cuisines`` más comunes se agrupan en "otras"
+    (una categoría con muy pocas mesas domina el MCA sin decir nada), y los números
+    se agrupan: personas en 1 / 2 / 3-4 / 5+ y nivel de precio en cuartiles.
+    """
+    top = mesas["cocina"].value_counts().index[:top_cuisines]
+    return pd.DataFrame(
+        {
+            "franja": mesas["franja"].astype(str),
+            "fin_de_semana": np.where(mesas["fin_de_semana"], "fin de semana", "entre semana"),
+            "cocina": mesas["cocina"].where(mesas["cocina"].isin(top), "otras"),
+            "personas": pd.cut(mesas["pax"], [0, 1, 2, 4, np.inf], labels=["1", "2", "3-4", "5+"]),
+            "nivel_precio": pd.qcut(mesas["nivel_precio"], 4, labels=["Q1", "Q2", "Q3", "Q4"]),
+            "personal": mesas["personal"].astype(str),
+        },
+        index=mesas.index,
+    )
 
 
 def benzecri_inertia(eigenvalues: np.ndarray, n_variables: int) -> np.ndarray:
@@ -239,3 +261,85 @@ def recovery_vs_truth(
             {"rasgo": name, "metrica": "AMI", "valor": ami, "efecto": effect_label(ami, "V")}
         )
     return pd.DataFrame(rows)
+
+
+def trait_recovery(
+    observed: pd.DataFrame, latent: pd.DataFrame, pairs: Iterable[tuple[str, str]]
+) -> pd.DataFrame:
+    """Spearman entre cada feature **observada** y el rasgo **latente** que debería reflejar.
+
+    Es la prueba de que el comportamiento contiene la señal que el modelo tiene
+    que aprender (la verdad oculta solo se usa para verificar).
+    """
+    rows = []
+    for obs, lat in pairs:
+        pair = pd.DataFrame({"o": observed[obs], "l": latent[lat]}).dropna()
+        rho = float(stats.spearmanr(pair["o"], pair["l"])[0])
+        rows.append(
+            {"observado": obs, "latente": lat, "rho": rho, "efecto": effect_label(rho, "rho")}
+        )
+    return pd.DataFrame(rows)
+
+
+def sharing_by_table_trait(
+    sessions: pd.DataFrame,
+    guest_traits: pd.DataFrame,
+    order_items: pd.DataFrame,
+    *,
+    q: int = 3,
+) -> pd.DataFrame:
+    """Qué proporción de mesas comparte algo, por cuantil del gusto medio por compartir.
+
+    ``guest_traits`` trae ``session_id`` y ``trait`` (el rasgo latente de cada
+    persona sentada). Solo cuentan las mesas de 2 o más personas.
+    """
+    trait = guest_traits.groupby("session_id")["trait"].mean().rename("trait")
+    s = sessions.loc[sessions["pax"] >= 2, ["session_id"]].join(trait, on="session_id")
+    s = s.dropna(subset=["trait"])
+    shared = set(order_items.loc[order_items["is_shared"], "session_id"])
+    s["comparte"] = s["session_id"].isin(shared)
+    s["cuantil"] = pd.qcut(s["trait"].rank(method="first"), q, labels=range(1, q + 1))
+    by = s.groupby("cuantil", observed=True)
+    return pd.DataFrame(
+        {
+            "mesas": by.size(),
+            "gusto_medio": by["trait"].mean(),
+            "pct_comparten": 100 * by["comparte"].mean(),
+        }
+    ).reset_index()
+
+
+def latent_diner_traits(
+    tastes: pd.DataFrame,
+    duplicates: pd.DataFrame,
+    diner_ids: pd.Index,
+    cuisines: Sequence[str],
+) -> pd.DataFrame:
+    """Gustos latentes (verdad oculta) de cada comensal observado, solo para verificar.
+
+    Una cuenta duplicada hereda los gustos de la persona real que la abrió.
+    Agrega ``cocina_dominante``: la cocina con mayor afinidad latente.
+    """
+    true_of = duplicates.set_index("diner_id")["diner_id_true"]
+    ids = diner_ids.to_series()
+    out = tastes.set_index("diner_id").loc[ids.map(true_of).fillna(ids)].set_axis(diner_ids)
+    affinity = np.vstack(out["cuisine_affinity"].to_numpy())
+    out["cocina_dominante"] = np.asarray(cuisines)[affinity.argmax(axis=1)]
+    return out
+
+
+def guest_trait(
+    guests: pd.DataFrame,
+    taste_refs: pd.DataFrame,
+    taste_tables: Sequence[pd.DataFrame],
+    trait: str,
+) -> pd.DataFrame:
+    """Rasgo latente de **cada persona sentada**, registrada o acompañante anónimo.
+
+    ``taste_refs`` (``guest_tastes`` de la verdad oculta) apunta cada invitado a una
+    fila de alguna de las ``taste_tables`` (``diner_tastes``, ``anonymous_tastes``).
+    """
+    lookup = pd.concat([t.set_index("diner_id")[trait] for t in taste_tables])
+    out = guests[["guest_id", "session_id"]].merge(taste_refs, on="guest_id")
+    out["trait"] = out["taste_ref"].map(lookup).to_numpy()
+    return out[["guest_id", "session_id", "trait"]]
