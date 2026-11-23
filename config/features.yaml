@@ -8,8 +8,9 @@ canonical_column: canonical_pred
 point_in_time: true
 
 fallback:
-  # Pedidos mínimos del restaurante para usar su popularidad. Se elige en validación.
-  restaurant_min_orders: null
+  # Pedidos mínimos del restaurante para usar su popularidad. En validación (nb 11) N = 0
+  # y N = 1 empatan, pero con restaurantes nuevos (nb 13) N = 0 ordena al azar: se usa 1.
+  restaurant_min_orders: 1
 
 encoding:
   one_hot: [course, protein, day_of_week, hour_band, cuisine]

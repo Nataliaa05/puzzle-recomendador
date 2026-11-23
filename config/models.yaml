@@ -44,4 +44,7 @@ evaluation:
   k: [3, 5]
   bootstrap_iterations: 2000
   permutation_iterations: 5000
-  min_relevant_improvement: null   # se define en notebooks/00 antes de tocar el test
+  # Mejora mínima que justifica cambiar de modelo: 0.01 de NDCG@3 (absoluta).
+  # Fijada en el notebook 13, ANTES de mirar la prueba. Menos que esto no se nota
+  # en una lista de 3 a 5 platillos y no paga la complejidad de mantener otro modelo.
+  min_relevant_improvement: 0.01
