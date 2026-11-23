@@ -9,6 +9,7 @@ from puzzle_recsys.simulation.choice import (
     group_utility,
     gumbel_choice,
     restaurant_utility,
+    share_probability,
 )
 
 CFG = {
@@ -165,3 +166,23 @@ def test_a_shared_dish_needs_at_least_two_people() -> None:
     eligible = np.array([[True], [False], [False]])
     out = shared_group_utility(u, eligible, least_misery_weight=0.3, exclusion_penalty=0.5)
     assert np.isneginf(out[0])
+
+
+SHARE = {"base_probability": 0.15, "pax_slope": 0.08, "sharer_weight": 1.0}
+
+
+def test_share_probability_rises_with_how_much_the_table_likes_to_share() -> None:
+    """Regresión: el rasgo ``sharer`` no cambiaba SI la mesa compartía (notebook 08)."""
+    avg = share_probability(np.array([0.2, 0.2, 0.2]), SHARE, trait_mean=0.2)
+    assert avg == pytest.approx(0.15 + 0.08 * 2)  # mesa promedio: la tasa de siempre
+    high = share_probability(np.array([0.4, 0.4, 0.4]), SHARE, trait_mean=0.2)
+    low = share_probability(np.array([0.05, 0.05, 0.05]), SHARE, trait_mean=0.2)
+    assert low < avg < high <= 0.9
+
+
+def test_share_probability_is_zero_alone_and_neutral_without_weight() -> None:
+    assert share_probability(np.array([0.9]), SHARE, trait_mean=0.2) == 0.0
+    off = SHARE | {"sharer_weight": 0.0}
+    assert share_probability(np.array([0.9, 0.9]), off, trait_mean=0.2) == pytest.approx(0.23)
+    capped = share_probability(np.full(20, 0.9), SHARE, trait_mean=0.2)
+    assert capped == pytest.approx(0.9)

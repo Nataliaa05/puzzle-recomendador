@@ -186,6 +186,7 @@ choice:
 sharing:
   base_probability: 0.15
   pax_slope: 0.08
+  sharer_weight: 1.0                   # mesas de gente compartidora comparten más (S17)
   least_misery_weight: 0.3             # mezcla promedio / miseria mínima (entre quienes lo comen)
   exclusion_penalty: 0.5               # costo social por la fracción de la mesa que no puede comerlo
 

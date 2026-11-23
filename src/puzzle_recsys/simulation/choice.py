@@ -198,6 +198,24 @@ def restaurant_utility(
     return u
 
 
+def share_probability(sharers: np.ndarray, cfg: Mapping[str, Any], *, trait_mean: float) -> float:
+    """Probabilidad de que la mesa pida algo para compartir.
+
+    ``p = min(0.9, (base + pendiente·(pax - 1)) · (media_sharer / trait_mean)**w)``
+
+    El tamaño de la mesa marca la tasa base y el gusto por compartir de **quienes
+    se sientan** la mueve: una mesa promedio (media = ``trait_mean``) conserva la
+    tasa base, así que la proporción global de mesas que comparten casi no cambia.
+    ``sharer_weight = 0`` apaga el efecto.
+    """
+    pax = len(sharers)
+    if pax < 2:
+        return 0.0
+    base = cfg["base_probability"] + cfg["pax_slope"] * (pax - 1)
+    lift = (float(np.mean(sharers)) / trait_mean) ** cfg.get("sharer_weight", 0.0)
+    return min(0.9, base * lift)
+
+
 def shared_group_utility(
     member_utilities: np.ndarray,
     eligible: np.ndarray,

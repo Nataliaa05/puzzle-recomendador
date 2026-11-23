@@ -46,6 +46,7 @@ from puzzle_recsys.simulation.choice import (
     gumbel_choice,
     ideal_prices,
     restaurant_utility,
+    share_probability,
     shared_group_utility,
 )
 from puzzle_recsys.simulation.context import (
@@ -421,6 +422,8 @@ def simulate_visits(
         ocasión especial).
     """
     vcfg, ccfg, scfg = cfg["visits"], cfg["choice"], cfg["sharing"]
+    sharer_beta = cfg["population"]["taste"]["sharer_trait_beta"]
+    sharer_mean = sharer_beta["a"] / (sharer_beta["a"] + sharer_beta["b"])
     occ = ccfg["occasion"]
     tz = calendar["timezone"]
     start = pd.Timestamp(calendar["start_date"]).value
@@ -667,7 +670,9 @@ def simulate_visits(
             # 4) para compartir: se reparte SOLO entre quienes pueden comerlo (≥ 2).
             #    Quien es alérgico o tiene una dieta incompatible no come de ese plato,
             #    pero no impide que los demás lo compartan.
-            p_share = min(0.9, scfg["base_probability"] + scfg["pax_slope"] * (pax - 1))
+            p_share = share_probability(
+                np.array([m[3] for m in members]), scfg, trait_mean=sharer_mean
+            )
             if pax >= 2 and rng.random() < p_share:
                 options = np.flatnonzero(index.items.shareable[avail])
                 if len(options):

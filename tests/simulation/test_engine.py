@@ -290,3 +290,20 @@ def test_context_shapes_where_and_what_people_eat(run) -> None:
     assert share[0] < 0.5 * share[2]  # alcohol: casi nada en el desayuno
 
     assert s.loc[s["weekend"], "pax"].mean() > s.loc[~s["weekend"], "pax"].mean()
+
+
+def test_tables_of_sharers_share_more(run) -> None:
+    """Regresión: compartir dependía solo del tamaño de la mesa (notebook 08)."""
+    out, sharer = run["out"], run["registered"].sharer
+    g = out["guests"].dropna(subset=["diner_id"])
+    g = g[~g["diner_id"].str.endswith("-dup")]
+    g = g.assign(trait=sharer[g["diner_id"].str[1:].astype(int).to_numpy()])
+    table = g.groupby("session_id")["trait"].mean()
+    s = out["dining_sessions"].set_index("session_id")
+    s = s[s["pax"] >= 2].join(table.rename("trait"), how="inner")
+    shared = set(out["order_items"].loc[out["order_items"]["is_shared"], "session_id"])
+    s["shared"] = s.index.isin(shared)
+    q = s["trait"].quantile([1 / 3, 2 / 3])
+    low = s.loc[s["trait"] <= q.iloc[0], "shared"].mean()
+    high = s.loc[s["trait"] >= q.iloc[1], "shared"].mean()
+    assert high > 1.3 * low
