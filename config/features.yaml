@@ -17,3 +17,17 @@ encoding:
 
 missing:
   strategies: [median, knn, indicator]
+
+homologation:
+  # Relleno típico de las cartas: no ayuda a identificar el platillo.
+  stop_words: [de la casa, del chef, estilo chef, especial, especiales, premium, gourmet,
+               tradicional, clasico, clasica, orden, del dia]
+  known_alias_share: 0.5          # alias que el sistema ya conoce; el resto imita nombres nuevos
+  cuisine_weight_grid: [0.0, 0.1, 0.2, 0.3, 0.5]
+  cuisine_weight: 0.2             # elegido en el notebook 09 (mitad de restaurantes de ajuste)
+  confidence_thresholds: [0.3, 0.5, 0.7, 0.9]
+
+profile:
+  prior_strength: 3               # visitas "virtuales" del prior en la afinidad por cocina
+  declared_weight: 0.5            # peso de las cocinas declaradas en el onboarding
+  least_misery_weight: 0.3        # mismo valor que el simulador: (1 - w)·media + w·mínimo
