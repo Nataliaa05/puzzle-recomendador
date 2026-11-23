@@ -25,7 +25,14 @@ lgbm_ranker:
 
 optuna:
   sampler: tpe
-  n_trials: 100
+  # Un entrenamiento completo tarda 1.5 a 3 min; 100 intentos x 4 pliegues serían ~13 h.
+  # Se busca en UN pliegue de origen móvil con una submuestra de consultas, y lo mejor
+  # se verifica en el mes 10 (que Optuna no ve) y con los 4 pliegues completos.
+  n_trials: 40
+  fit_months: [1, 8]
+  eval_month: 9
+  query_share: 0.3
+  num_boost_round: 2000
   search_space:
     num_leaves: {low: 15, high: 255, log: true}
     learning_rate: {low: 0.01, high: 0.2, log: true}
