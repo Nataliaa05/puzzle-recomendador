@@ -6,6 +6,12 @@ split:                     # meses relativos al inicio de la simulación (1..12)
   test: [11, 12]
   cv_rolling_folds: 4
 
+sample:
+  # Fracción de comensales REGISTRADOS (cuentas) que entran al dataset del modelo.
+  # Con todos, "para ti" son ~11.6 M filas: no cabe en 8 GB de RAM. Cada consulta
+  # conserva su lista completa de candidatos (lo que piden las métricas de ranking).
+  diner_share: 0.3
+
 groups:
   for_you: [guest_visit_id, course]
   to_share: [session_id]
