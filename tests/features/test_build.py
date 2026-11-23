@@ -208,3 +208,53 @@ def test_sharing_features_count_earlier_shared_orders(world) -> None:
     assert f.loc["s1", "veces_compartido_previo"] == 0  # el compartido de s1 no se ve en s1
     assert f.loc["s2", "veces_compartido_previo"] == 1
     assert 0 < f.loc["s2", "tasa_compartido_canonico"] < 1
+
+
+def test_without_history_erases_personal_history_but_keeps_onboarding() -> None:
+    from puzzle_recsys.features.build import without_history
+
+    df = pd.DataFrame(
+        {
+            "diner_id": ["d1", "d1"],
+            "cocina_platillo": ["mexicana", "pizza"],
+            "visitas_previas": [10, 10],
+            "habito_tipo": [1.0, 1.0],
+            "picante_medio": [2.0, 2.0],
+            "log_ticket_medio": [5.0, 5.0],
+            "tasa_compartir": [0.3, 0.3],
+            "dias_desde_ultima": [3.0, 3.0],
+            "share_proteina": [0.5, 0.2],
+            "dif_picante": [0.0, 1.0],
+            "ajuste_precio": [0.1, 0.2],
+            "veces_pidio_canonico": [4, 0],
+            "veces_pidio_platillo": [2, 0],
+            "afinidad_cocina_platillo": [0.8, 0.1],
+            "picante_declarado": [2.0, 2.0],
+            "visitas_previas_restaurante": [3, 3],
+        }
+    )
+    prior = pd.DataFrame({"mexicana": [0.6], "pizza": [0.4]}, index=["d1"])
+    out = without_history(df, prior)
+    assert (out["visitas_previas"] == 0).all() and (out["veces_pidio_canonico"] == 0).all()
+    assert out["habito_tipo"].isna().all() and out["dif_picante"].isna().all()
+    assert out["afinidad_cocina_platillo"].tolist() == [0.6, 0.4]  # vuelve al prior del onboarding
+    assert out["picante_declarado"].tolist() == [2.0, 2.0]  # el onboarding se conserva
+    assert out["primera_vez_restaurante"].all()
+
+
+def test_as_new_restaurant_erases_local_popularity_only() -> None:
+    from puzzle_recsys.features.build import as_new_restaurant
+
+    df = pd.DataFrame(
+        {
+            "pedidos_previos_platillo": [10, 3],
+            "pedidos_previos_restaurante": [13, 13],
+            "share_restaurante": [0.3, 0.1],
+            "share_global_canonico": [0.2, 0.05],
+        }
+    )
+    out = as_new_restaurant(df)
+    assert (out["pedidos_previos_restaurante"] == 0).all()
+    share = out["share_restaurante"]
+    assert (share == share.iloc[0]).all()  # sin historia local: todos iguales
+    assert out["share_global_canonico"].tolist() == [0.2, 0.05]  # lo global sigue

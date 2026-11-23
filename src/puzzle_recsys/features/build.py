@@ -242,3 +242,59 @@ def sharing_features(cands: pd.DataFrame, lines: pd.DataFrame) -> pd.DataFrame:
     canon_all = count_before(ev, c, keys=["canonical_pred"]).to_numpy()
     c["tasa_compartido_canonico"] = (canon_shared + 1) / (canon_all + _SMOOTH_K)
     return c
+
+
+# Features que dependen de la historia de la persona (se borran en el contrafactual).
+_PERSONAL_NAN = (
+    "habito_tipo",
+    "picante_medio",
+    "log_ticket_medio",
+    "tasa_compartir",
+    "dias_desde_ultima",
+    "share_proteina",
+    "dif_picante",
+    "ajuste_precio",
+)
+_PERSONAL_ZERO = (
+    "visitas_previas",
+    "veces_pidio_canonico",
+    "veces_pidio_platillo",
+    "visitas_previas_restaurante",
+)
+
+
+def without_history(cands: pd.DataFrame, prior: pd.DataFrame) -> pd.DataFrame:
+    """Contrafactual de **arranque en frío**: la misma consulta, como si la persona fuera nueva.
+
+    Se borra todo lo que viene de sus visitas anteriores; solo quedan el onboarding
+    (picante declarado y cocinas declaradas, que ya están en ``prior``) y la
+    popularidad. La afinidad por cocina vuelve al prior (población + onboarding,
+    notebook 09).
+    """
+    c = cands.copy()
+    for col in _PERSONAL_NAN:
+        if col in c.columns:
+            c[col] = np.nan
+    for col in _PERSONAL_ZERO:
+        if col in c.columns:
+            c[col] = 0
+    long = (
+        prior.rename_axis("diner_id")
+        .reset_index()
+        .melt("diner_id", var_name="cocina_platillo", value_name="_prior")
+    )
+    merged = c[["diner_id", "cocina_platillo"]].merge(
+        long, on=["diner_id", "cocina_platillo"], how="left"
+    )
+    c["afinidad_cocina_platillo"] = merged["_prior"].to_numpy()
+    c["primera_vez_restaurante"] = True
+    return c
+
+
+def as_new_restaurant(cands: pd.DataFrame) -> pd.DataFrame:
+    """Contrafactual de **restaurante nuevo**: sin pedidos previos locales (lo global sigue)."""
+    c = cands.copy()
+    c["pedidos_previos_platillo"] = 0
+    c["pedidos_previos_restaurante"] = 0
+    c["share_restaurante"] = 1 / _SMOOTH_K
+    return c
