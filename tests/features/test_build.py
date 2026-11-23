@@ -121,6 +121,7 @@ def test_item_features_only_count_earlier_orders(world) -> None:
     assert f.loc[("s1", "m1"), "pedidos_previos_platillo"] == 0
     assert f.loc[("s2", "m1"), "pedidos_previos_platillo"] == 1
     assert f.loc[("s2", "m4"), "pedidos_previos_platillo"] == 0
+    assert f.loc[("s2", "m4"), "pedidos_previos_restaurante"] == 1  # m1 en s1 (MAIN de r1)
     assert f.groupby(level=0)["precio_relativo"].sum().abs().max() < 1e-9  # centrado por consulta
     assert f.loc[("s2", "m4"), "dias_en_menu"] == pytest.approx(5 + 14 / 24)
     assert (f["share_restaurante"] > 0).all()  # suavizado: nunca exactamente 0

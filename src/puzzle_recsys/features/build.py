@@ -99,6 +99,8 @@ def item_features(cands: pd.DataFrame, lines: pd.DataFrame, menu: pd.DataFrame) 
     - ``precio_relativo``: log del precio menos la media del log en la consulta
       (¿es de lo caro o de lo barato de **este** menú?).
     - ``pedidos_previos_platillo``: veces que se pidió antes, por cualquiera.
+    - ``pedidos_previos_restaurante``: pedidos previos del restaurante en ese tipo
+      de plato (decide si su popularidad es confiable).
     - ``share_restaurante``: proporción suavizada de los pedidos previos del
       restaurante en ese tipo de plato. ``share_global_canonico``: lo mismo para el
       canónico en **toda** la plataforma (respaldo cuando el restaurante es nuevo).
@@ -116,6 +118,7 @@ def item_features(cands: pd.DataFrame, lines: pd.DataFrame, menu: pd.DataFrame) 
     ev = lines[["menu_item_id", "restaurant_id", "course", "canonical_pred", "t"]]
     c["pedidos_previos_platillo"] = count_before(ev, c, keys=["menu_item_id"]).to_numpy()
     rest = count_before(ev, c, keys=["restaurant_id", "course"]).to_numpy()
+    c["pedidos_previos_restaurante"] = rest
     c["share_restaurante"] = (c["pedidos_previos_platillo"] + 1) / (rest + _SMOOTH_K)
     canon = count_before(ev, c, keys=["canonical_pred"]).to_numpy()
     course = count_before(ev, c, keys=["course"]).to_numpy()
